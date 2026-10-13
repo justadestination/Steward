@@ -1,0 +1,403 @@
+{
+  "graph": "conduct",
+  "version": 2,
+  "policy": "house_rules",
+  "initial": "with_ward",
+  "terminal": [
+    "gone"
+  ],
+  "events": {
+    "remark": {
+      "payload": [
+        "exchange_id"
+      ],
+      "signals": [
+        "abuse"
+      ]
+    },
+    "resume": {
+      "payload": [],
+      "signals": []
+    },
+    "strike_overturned": {
+      "payload": [
+        "strike_id"
+      ],
+      "signals": []
+    },
+    "strike_upheld": {
+      "payload": [
+        "strike_id"
+      ],
+      "signals": []
+    },
+    "appeal_refused": {
+      "payload": [
+        "strike_id"
+      ],
+      "signals": []
+    },
+    "case_overturned": {
+      "payload": [
+        "case_id",
+        "overturned"
+      ],
+      "signals": []
+    },
+    "case_final": {
+      "payload": [
+        "case_id"
+      ],
+      "signals": []
+    },
+    "penalty_set": {
+      "payload": [
+        "strike_id",
+        "weight"
+      ],
+      "signals": []
+    }
+  },
+  "states": {
+    "with_ward": "The Steward is with its ward.",
+    "timed_out": "Second strike: the Steward has stepped away for the posted time.",
+    "departed": "Third strike: the Steward has left. The ward's data is sealed on the phone until the case and any appeal are final.",
+    "gone": "The departure stood. Everything was destroyed; the mark lives on the line."
+  },
+  "transitions": [
+    {
+      "from": "with_ward",
+      "on": "remark",
+      "branches": [
+        {
+          "when": "not_a_strike",
+          "to": "with_ward",
+          "do": []
+        },
+        {
+          "when": "no_active_strikes",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "add_strike",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.warning"
+              }
+            }
+          ]
+        },
+        {
+          "when": "one_active_strike",
+          "to": "timed_out",
+          "do": [
+            {
+              "action": "add_strike",
+              "args": {}
+            },
+            {
+              "action": "start_time_out",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.time_out"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "departed",
+          "do": [
+            {
+              "action": "add_strike",
+              "args": {}
+            },
+            {
+              "action": "seal_and_open_case",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.departure"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "with_ward",
+      "on": "resume",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "with_ward",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "timed_out",
+      "on": "resume",
+      "branches": [
+        {
+          "when": "time_out_over",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "end_time_out",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.welcome_back"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "timed_out",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.still_resting"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "with_ward",
+      "on": "strike_overturned",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "remove_strike",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.strike_overturned"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "timed_out",
+      "on": "strike_overturned",
+      "branches": [
+        {
+          "when": "strike_holds_time_out",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "remove_strike",
+              "args": {}
+            },
+            {
+              "action": "end_time_out",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.strike_overturned"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "timed_out",
+          "do": [
+            {
+              "action": "remove_strike",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.strike_overturned"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "with_ward",
+      "on": "penalty_set",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "set_strike_weight",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.penalty_set"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "with_ward",
+      "on": "strike_upheld",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.strike_upheld"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "with_ward",
+      "on": "appeal_refused",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.appeal_refused"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "timed_out",
+      "on": "penalty_set",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "timed_out",
+          "do": [
+            {
+              "action": "set_strike_weight",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.penalty_set"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "timed_out",
+      "on": "strike_upheld",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "timed_out",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.strike_upheld"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "timed_out",
+      "on": "appeal_refused",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "timed_out",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.appeal_refused"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "departed",
+      "on": "case_overturned",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "with_ward",
+          "do": [
+            {
+              "action": "remove_strikes",
+              "args": {}
+            },
+            {
+              "action": "unseal",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "conduct.returned"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "departed",
+      "on": "case_final",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "gone",
+          "do": [
+            {
+              "action": "destroy_sealed",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

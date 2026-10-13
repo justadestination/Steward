@@ -1,0 +1,110 @@
+{
+  "graph": "outbox",
+  "version": 2,
+  "policy": "house_rules",
+  "initial": "drafting",
+  "terminal": [
+    "sent",
+    "discarded"
+  ],
+  "events": {
+    "submit": {
+      "payload": [
+        "text"
+      ],
+      "signals": [
+        "abuse"
+      ]
+    },
+    "discard": {
+      "payload": [],
+      "signals": []
+    }
+  },
+  "states": {
+    "drafting": "The ward is writing a post.",
+    "nudged": "The Steward has said the House won't take it as it stands.",
+    "sent": "The post went on to the House.",
+    "discarded": "The ward dropped the post."
+  },
+  "transitions": [
+    {
+      "from": "drafting",
+      "on": "submit",
+      "branches": [
+        {
+          "when": "abuse_at_strike_level",
+          "to": "nudged",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "outbox.abuse_nudge"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "sent",
+          "do": [
+            {
+              "action": "forward_to_house",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "nudged",
+      "on": "submit",
+      "branches": [
+        {
+          "when": "abuse_at_strike_level",
+          "to": "nudged",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "outbox.abuse_nudge"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "sent",
+          "do": [
+            {
+              "action": "forward_to_house",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "drafting",
+      "on": "discard",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "discarded",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "nudged",
+      "on": "discard",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "discarded",
+          "do": []
+        }
+      ]
+    }
+  ]
+}

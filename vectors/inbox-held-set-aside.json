@@ -1,0 +1,130 @@
+{
+  "graph": "inbox",
+  "policy": {
+    "kind": "reader_profile",
+    "handle": "ward",
+    "inbox": {
+      "hold_at": "strong"
+    }
+  },
+  "events": [
+    {
+      "type": "screen",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {
+        "message_id": "m3"
+      },
+      "signals": {
+        "hostility": "strong"
+      }
+    },
+    {
+      "type": "set_aside",
+      "at": "2026-10-12T20:01:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "open",
+      "at": "2026-10-12T20:02:00Z",
+      "payload": {
+        "message_id": "m3"
+      },
+      "signals": {}
+    }
+  ],
+  "context": {},
+  "instance": "inbox-held-set-aside",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-held-set-aside",
+      "seq": 0,
+      "state": "arrived",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-held-set-aside",
+      "seq": 1,
+      "event": {
+        "type": "screen",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {
+          "message_id": "m3"
+        },
+        "signals": {
+          "hostility": "strong"
+        }
+      },
+      "from": "arrived",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "hostile_toward_reader",
+      "to": "held",
+      "actions": [
+        {
+          "action": "say",
+          "args": {
+            "message": "inbox.held"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "inbox.held"
+        }
+      ],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-held-set-aside",
+      "seq": 2,
+      "event": {
+        "type": "set_aside",
+        "at": "2026-10-12T20:01:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "held",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "set_aside",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-held-set-aside",
+      "seq": 3,
+      "event": {
+        "type": "open",
+        "at": "2026-10-12T20:02:00Z",
+        "payload": {
+          "message_id": "m3"
+        },
+        "signals": {}
+      },
+      "from": "set_aside",
+      "outcome": "not_accepted",
+      "branch": null,
+      "when": null,
+      "to": "set_aside",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    }
+  ]
+}

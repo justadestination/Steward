@@ -1,0 +1,140 @@
+{
+  "graph": "introduction",
+  "policy": {
+    "kind": "reader_profile",
+    "handle": "ward",
+    "inbox": {
+      "hold_at": "strong"
+    }
+  },
+  "rejects": [
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00+00:00",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12 20:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00.5Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-02-30T20:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T24:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T23:59:60Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-13-01T00:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "２026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12t20:00:00z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "yesterday",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {},
+      "extra": 1
+    },
+    {
+      "type": "",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": [],
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {
+        "x": 1
+      }
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {
+        "unexpected": true
+      },
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {
+        "abuse": "none"
+      }
+    },
+    {
+      "type": "never_declared",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {}
+    }
+  ],
+  "context": {},
+  "instance": "introduction-rejects"
+}

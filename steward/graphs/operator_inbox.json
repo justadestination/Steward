@@ -1,0 +1,50 @@
+{
+  "graph": "operator_inbox",
+  "version": 1,
+  "policy": "house_rules",
+  "initial": "received",
+  "terminal": [
+    "filed"
+  ],
+  "events": {
+    "arrive": {
+      "payload": [
+        "mail_id",
+        "steward_id",
+        "case_id",
+        "text"
+      ],
+      "signals": [
+        "abuse"
+      ]
+    }
+  },
+  "states": {
+    "received": "Mail for @dontwastemytime has reached the server.",
+    "filed": "In the operators' inbox. There is no other outcome."
+  },
+  "transitions": [
+    {
+      "from": "received",
+      "on": "arrive",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "filed",
+          "do": [
+            {
+              "action": "file_for_operators",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.operator_mail"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

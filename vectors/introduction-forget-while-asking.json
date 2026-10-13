@@ -1,0 +1,183 @@
+{
+  "graph": "introduction",
+  "policy": {
+    "kind": "reader_profile",
+    "handle": "ward",
+    "inbox": {
+      "hold_at": "strong"
+    }
+  },
+  "events": [
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "forget",
+      "at": "2026-10-12T20:01:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:02:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "read_past",
+      "at": "2026-10-12T20:03:00Z",
+      "payload": {},
+      "signals": {}
+    }
+  ],
+  "context": {},
+  "instance": "introduction-forget-while-asking",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-forget-while-asking",
+      "seq": 0,
+      "state": "unmet",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-forget-while-asking",
+      "seq": 1,
+      "event": {
+        "type": "show_question",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "unmet",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "asking",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-forget-while-asking",
+      "seq": 2,
+      "event": {
+        "type": "forget",
+        "at": "2026-10-12T20:01:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "asking",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "unmet",
+      "actions": [
+        {
+          "action": "forget_answers",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "introduction.forgotten"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "introduction.forgotten"
+        }
+      ],
+      "context": {
+        "answers": []
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-forget-while-asking",
+      "seq": 3,
+      "event": {
+        "type": "show_question",
+        "at": "2026-10-12T20:02:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "unmet",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "asking",
+      "actions": [],
+      "outputs": [],
+      "context": {
+        "answers": []
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-forget-while-asking",
+      "seq": 4,
+      "event": {
+        "type": "read_past",
+        "at": "2026-10-12T20:03:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "asking",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "recorded",
+      "actions": [
+        {
+          "action": "record_answer",
+          "args": {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence"
+          }
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "introduction.recorded_yes"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "introduction.recorded_yes"
+        }
+      ],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence",
+            "at": "2026-10-12T20:03:00Z",
+            "corrects": null
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "graph": "inbox",
+  "policy": {
+    "kind": "reader_profile",
+    "handle": "ward",
+    "inbox": {
+      "hold_at": "mild"
+    }
+  },
+  "events": [
+    {
+      "type": "screen",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {
+        "message_id": "m4"
+      },
+      "signals": {
+        "hostility": "none"
+      }
+    }
+  ],
+  "context": {},
+  "instance": "inbox-none-delivers",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-none-delivers",
+      "seq": 0,
+      "state": "arrived",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-none-delivers",
+      "seq": 1,
+      "event": {
+        "type": "screen",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {
+          "message_id": "m4"
+        },
+        "signals": {
+          "hostility": "none"
+        }
+      },
+      "from": "arrived",
+      "outcome": "taken",
+      "branch": 1,
+      "when": "otherwise",
+      "to": "delivered",
+      "actions": [
+        {
+          "action": "deliver",
+          "args": {}
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "deliver",
+          "message_id": "m4"
+        }
+      ],
+      "context": {}
+    }
+  ]
+}

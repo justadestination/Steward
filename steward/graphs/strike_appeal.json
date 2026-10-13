@@ -1,0 +1,228 @@
+{
+  "graph": "strike_appeal",
+  "version": 2,
+  "policy": "house_rules",
+  "initial": "received",
+  "terminal": [
+    "upheld",
+    "overturned",
+    "penalised",
+    "refused"
+  ],
+  "events": {
+    "open": {
+      "payload": [],
+      "signals": []
+    },
+    "tick": {
+      "payload": [],
+      "signals": []
+    },
+    "appeal_upheld": {
+      "payload": [
+        "reviewer"
+      ],
+      "signals": []
+    },
+    "appeal_overturned": {
+      "payload": [
+        "reviewer"
+      ],
+      "signals": []
+    },
+    "appeal_frivolous": {
+      "payload": [
+        "reviewer",
+        "weight"
+      ],
+      "signals": []
+    }
+  },
+  "states": {
+    "received": "A ward has appealed one strike.",
+    "filed": "Waiting for an operator ruling, at most 72 hours.",
+    "upheld": "The strike stands.",
+    "overturned": "The strike is removed (by ruling, or because no ruling came in time).",
+    "refused": "Filed after the 14-day window.",
+    "penalised": "Frivolous: the operator set what the strike counts for, within the posted limit."
+  },
+  "transitions": [
+    {
+      "from": "received",
+      "on": "open",
+      "branches": [
+        {
+          "when": "strike_appeal_window_over",
+          "to": "refused",
+          "do": [
+            {
+              "action": "tell_about_strike",
+              "args": {
+                "event": "appeal_refused"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "filed",
+          "do": [
+            {
+              "action": "stamp",
+              "args": {
+                "field": "appealed_at"
+              }
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_filed"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "filed",
+      "on": "tick",
+      "branches": [
+        {
+          "when": "appeal_deadline_passed",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "tell_about_strike",
+              "args": {
+                "event": "strike_overturned"
+              }
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "filed",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "filed",
+      "on": "appeal_upheld",
+      "branches": [
+        {
+          "when": "appeal_deadline_passed",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "tell_about_strike",
+              "args": {
+                "event": "strike_overturned"
+              }
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "upheld",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "tell_about_strike",
+              "args": {
+                "event": "strike_upheld"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "filed",
+      "on": "appeal_frivolous",
+      "branches": [
+        {
+          "when": "appeal_deadline_passed",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "tell_about_strike",
+              "args": {
+                "event": "strike_overturned"
+              }
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "penalty_out_of_bounds",
+          "to": "filed",
+          "do": [
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.penalty_invalid"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "penalised",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "tell_penalty_set",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "filed",
+      "on": "appeal_overturned",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "tell_about_strike",
+              "args": {
+                "event": "strike_overturned"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

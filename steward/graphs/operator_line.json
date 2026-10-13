@@ -1,0 +1,63 @@
+{
+  "graph": "operator_line",
+  "version": 1,
+  "policy": "house_rules",
+  "initial": "drafting",
+  "terminal": [
+    "sent",
+    "discarded"
+  ],
+  "events": {
+    "send": {
+      "payload": [
+        "text",
+        "case_id"
+      ],
+      "signals": []
+    },
+    "discard": {
+      "payload": [],
+      "signals": []
+    }
+  },
+  "states": {
+    "drafting": "The ward is writing to @dontwastemytime. Available in every conduct state.",
+    "sent": "On its way to the operators. Nothing can stop it.",
+    "discarded": "The ward dropped it."
+  },
+  "transitions": [
+    {
+      "from": "drafting",
+      "on": "send",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "sent",
+          "do": [
+            {
+              "action": "forward_to_operators",
+              "args": {}
+            },
+            {
+              "action": "say",
+              "args": {
+                "message": "operators.sent"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "drafting",
+      "on": "discard",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "discarded",
+          "do": []
+        }
+      ]
+    }
+  ]
+}

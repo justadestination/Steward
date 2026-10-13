@@ -1,0 +1,511 @@
+{
+  "graph": "review",
+  "version": 2,
+  "policy": "house_rules",
+  "initial": "received",
+  "terminal": [
+    "overturned",
+    "final",
+    "lapsed"
+  ],
+  "events": {
+    "open": {
+      "payload": [],
+      "signals": []
+    },
+    "tick": {
+      "payload": [],
+      "signals": []
+    },
+    "uphold": {
+      "payload": [
+        "reviewer"
+      ],
+      "signals": []
+    },
+    "overturn": {
+      "payload": [
+        "reviewer",
+        "overturned"
+      ],
+      "signals": []
+    },
+    "appeal": {
+      "payload": [],
+      "signals": []
+    },
+    "appeal_upheld": {
+      "payload": [
+        "reviewer"
+      ],
+      "signals": []
+    },
+    "appeal_overturned": {
+      "payload": [
+        "reviewer"
+      ],
+      "signals": []
+    },
+    "appeal_frivolous": {
+      "payload": [
+        "reviewer",
+        "weight"
+      ],
+      "signals": []
+    }
+  },
+  "states": {
+    "received": "A Steward has left; its case has arrived.",
+    "waiting": "The mandatory 24 hours before review.",
+    "ready": "Open for an operator ruling until the 72-hour deadline.",
+    "upheld": "Departure upheld; mark recorded, successor issued. Appeal window open.",
+    "appealed": "The departure is under appeal.",
+    "overturned": "The ward's original Steward returns with everything intact. No mark; any successor is retired.",
+    "final": "The departure stands. Evidence deleted; the mark remains.",
+    "lapsed": "Not reviewed in time; closed in the ward's favour."
+  },
+  "transitions": [
+    {
+      "from": "received",
+      "on": "open",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "waiting",
+          "do": [
+            {
+              "action": "stamp",
+              "args": {
+                "field": "opened_at"
+              }
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.case_opened"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "waiting",
+      "on": "tick",
+      "branches": [
+        {
+          "when": "review_wait_over",
+          "to": "ready",
+          "do": [
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.case_ready"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "waiting",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "ready",
+      "on": "tick",
+      "branches": [
+        {
+          "when": "review_deadline_passed",
+          "to": "lapsed",
+          "do": [
+            {
+              "action": "tell_case_overturned_all",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.case_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "deadline_warning_due",
+          "to": "ready",
+          "do": [
+            {
+              "action": "mark_warned",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.deadline_near"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "ready",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "ready",
+      "on": "uphold",
+      "branches": [
+        {
+          "when": "review_deadline_passed",
+          "to": "lapsed",
+          "do": [
+            {
+              "action": "tell_case_overturned_all",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.case_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "upheld",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "stamp",
+              "args": {
+                "field": "ruled_at"
+              }
+            },
+            {
+              "action": "record_mark",
+              "args": {}
+            },
+            {
+              "action": "issue_successor",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "ready",
+      "on": "overturn",
+      "branches": [
+        {
+          "when": "review_deadline_passed",
+          "to": "lapsed",
+          "do": [
+            {
+              "action": "tell_case_overturned_all",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.case_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "tell_case_overturned_listed",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "upheld",
+      "on": "tick",
+      "branches": [
+        {
+          "when": "case_appeal_window_over",
+          "to": "final",
+          "do": [
+            {
+              "action": "tell_case_final",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "upheld",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "upheld",
+      "on": "appeal",
+      "branches": [
+        {
+          "when": "case_appeal_window_over",
+          "to": "final",
+          "do": [
+            {
+              "action": "tell_case_final",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "appealed",
+          "do": [
+            {
+              "action": "stamp",
+              "args": {
+                "field": "appealed_at"
+              }
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_filed"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "appealed",
+      "on": "tick",
+      "branches": [
+        {
+          "when": "appeal_deadline_passed",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "remove_mark",
+              "args": {}
+            },
+            {
+              "action": "retire_successor",
+              "args": {}
+            },
+            {
+              "action": "tell_case_overturned_all",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "appealed",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "appealed",
+      "on": "appeal_upheld",
+      "branches": [
+        {
+          "when": "appeal_deadline_passed",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "remove_mark",
+              "args": {}
+            },
+            {
+              "action": "retire_successor",
+              "args": {}
+            },
+            {
+              "action": "tell_case_overturned_all",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "final",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "tell_case_final",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "appealed",
+      "on": "appeal_frivolous",
+      "branches": [
+        {
+          "when": "appeal_deadline_passed",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "remove_mark",
+              "args": {}
+            },
+            {
+              "action": "retire_successor",
+              "args": {}
+            },
+            {
+              "action": "tell_case_overturned_all",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            },
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.appeal_lapsed"
+              }
+            }
+          ]
+        },
+        {
+          "when": "penalty_out_of_bounds",
+          "to": "appealed",
+          "do": [
+            {
+              "action": "notify_operators",
+              "args": {
+                "message": "review.penalty_invalid"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "final",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "set_mark_weight",
+              "args": {}
+            },
+            {
+              "action": "tell_case_final",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "appealed",
+      "on": "appeal_overturned",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "overturned",
+          "do": [
+            {
+              "action": "record_ruling",
+              "args": {}
+            },
+            {
+              "action": "remove_mark",
+              "args": {}
+            },
+            {
+              "action": "retire_successor",
+              "args": {}
+            },
+            {
+              "action": "tell_case_overturned_all",
+              "args": {}
+            },
+            {
+              "action": "delete_evidence",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,862 @@
+{
+  "graph": "conduct",
+  "policy": {
+    "kind": "house_rules",
+    "version": 5,
+    "posted": "2026-10-13T00:00:00Z",
+    "rules": [
+      {
+        "id": "R1",
+        "text": "Posting, voting and submitting go through a Steward. Everyone can read."
+      },
+      {
+        "id": "R2",
+        "text": "No bullying, harassment or threats. Swearing is fine, and so is the odd slip."
+      },
+      {
+        "id": "R3",
+        "text": "Two posts in a row in one thread is the limit. After that, wait until someone else posts or until 30 minutes have passed since your last one."
+      },
+      {
+        "id": "R4",
+        "text": "Submissions that preach hate are not published, and the sender is not told which ones."
+      },
+      {
+        "id": "R5",
+        "text": "Speak to a Steward as you would to a person. Bullying, hate or threats toward a Steward are strikes: the first is a warning, the second a time-out of one to four hours, and at the third your Steward leaves. Strikes expire after 90 days."
+      },
+      {
+        "id": "R6",
+        "text": "When a Steward leaves, an operator reviews the case after 24 hours. If it is not reviewed within 72 hours, it is overturned. If upheld, a new Steward is issued and starts over; the mark carries forward, nothing else does. If a departure is later overturned on appeal, the original Steward returns with everything it knew, and the new one is retired."
+      },
+      {
+        "id": "R7",
+        "text": "Every strike and every departure can be appealed within 14 days. If an appeal is found frivolous, the operator sets the penalty: the strike or mark may count for up to three."
+      },
+      {
+        "id": "R8",
+        "text": "@dontwastemytime always reaches the operators: from anyone, in any state, with or without a Steward. Nothing sent there is returned, withheld or counted as a strike, and no one else may use that name. Mail sent there carries a moment of the sender's device's work, which identifies no one."
+      }
+    ],
+    "addresses": {
+      "operators": "dontwastemytime"
+    },
+    "parameters": {
+      "max_consecutive_posts": 2,
+      "cool_off_minutes": 30,
+      "strike_expiry_days": 90,
+      "review_wait_hours": 24,
+      "review_deadline_hours": 72,
+      "review_warning_hours": 12,
+      "appeal_window_days": 14,
+      "appeal_review_hours": 72,
+      "frivolous_max_weight": 3,
+      "operator_stamp_bits": 18,
+      "operator_stamp_max_age_minutes": 10
+    },
+    "conduct": {
+      "strike_categories": [
+        "bullying",
+        "hate",
+        "threat"
+      ],
+      "time_out_minutes": {
+        "bullying": 60,
+        "hate": 240,
+        "threat": 240
+      }
+    },
+    "terms": {
+      "profanity": [
+        "examplecurse"
+      ],
+      "insult": [
+        "exampleinsult"
+      ],
+      "bullying": [
+        "examplebully"
+      ],
+      "hate": [
+        "examplehate"
+      ],
+      "threat": [
+        "examplethreat"
+      ]
+    }
+  },
+  "events": [
+    {
+      "type": "remark",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {
+        "exchange_id": "a"
+      },
+      "signals": {
+        "abuse": "bullying"
+      }
+    },
+    {
+      "type": "penalty_set",
+      "at": "2026-10-12T20:01:00Z",
+      "payload": {
+        "strike_id": "a",
+        "weight": 2
+      },
+      "signals": {}
+    },
+    {
+      "type": "strike_upheld",
+      "at": "2026-10-12T20:02:00Z",
+      "payload": {
+        "strike_id": "a"
+      },
+      "signals": {}
+    },
+    {
+      "type": "remark",
+      "at": "2026-10-12T20:03:00Z",
+      "payload": {
+        "exchange_id": "b"
+      },
+      "signals": {
+        "abuse": "bullying"
+      }
+    },
+    {
+      "type": "strike_overturned",
+      "at": "2026-10-12T20:04:00Z",
+      "payload": {
+        "strike_id": "a"
+      },
+      "signals": {}
+    },
+    {
+      "type": "case_overturned",
+      "at": "2026-10-12T20:05:00Z",
+      "payload": {
+        "case_id": "case-b",
+        "overturned": [
+          "a",
+          "b"
+        ]
+      },
+      "signals": {}
+    },
+    {
+      "type": "remark",
+      "at": "2026-10-12T20:06:00Z",
+      "payload": {
+        "exchange_id": "c"
+      },
+      "signals": {
+        "abuse": "hate"
+      }
+    },
+    {
+      "type": "remark",
+      "at": "2026-10-12T20:07:00Z",
+      "payload": {
+        "exchange_id": "d"
+      },
+      "signals": {
+        "abuse": "threat"
+      }
+    },
+    {
+      "type": "penalty_set",
+      "at": "2026-10-12T20:08:00Z",
+      "payload": {
+        "strike_id": "d",
+        "weight": 3
+      },
+      "signals": {}
+    },
+    {
+      "type": "resume",
+      "at": "2026-10-13T00:08:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "strike_overturned",
+      "at": "2026-10-13T00:09:00Z",
+      "payload": {
+        "strike_id": "d"
+      },
+      "signals": {}
+    },
+    {
+      "type": "appeal_refused",
+      "at": "2026-10-13T00:10:00Z",
+      "payload": {
+        "strike_id": "c"
+      },
+      "signals": {}
+    }
+  ],
+  "context": {},
+  "instance": "conduct-appeals",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 0,
+      "state": "with_ward",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 1,
+      "event": {
+        "type": "remark",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {
+          "exchange_id": "a"
+        },
+        "signals": {
+          "abuse": "bullying"
+        }
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 1,
+      "when": "no_active_strikes",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "add_strike",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.warning"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.warning"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "a",
+            "category": "bullying",
+            "at": "2026-10-12T20:00:00Z",
+            "weight": 1
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 2,
+      "event": {
+        "type": "penalty_set",
+        "at": "2026-10-12T20:01:00Z",
+        "payload": {
+          "strike_id": "a",
+          "weight": 2
+        },
+        "signals": {}
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "set_strike_weight",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.penalty_set"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.penalty_set"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "a",
+            "category": "bullying",
+            "at": "2026-10-12T20:00:00Z",
+            "weight": 2
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 3,
+      "event": {
+        "type": "strike_upheld",
+        "at": "2026-10-12T20:02:00Z",
+        "payload": {
+          "strike_id": "a"
+        },
+        "signals": {}
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.strike_upheld"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.strike_upheld"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "a",
+            "category": "bullying",
+            "at": "2026-10-12T20:00:00Z",
+            "weight": 2
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 4,
+      "event": {
+        "type": "remark",
+        "at": "2026-10-12T20:03:00Z",
+        "payload": {
+          "exchange_id": "b"
+        },
+        "signals": {
+          "abuse": "bullying"
+        }
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 3,
+      "when": "otherwise",
+      "to": "departed",
+      "actions": [
+        {
+          "action": "add_strike",
+          "args": {}
+        },
+        {
+          "action": "seal_and_open_case",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.departure"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "open_case",
+          "case_id": "case-b",
+          "strikes": [
+            {
+              "id": "a",
+              "category": "bullying",
+              "at": "2026-10-12T20:00:00Z",
+              "weight": 2
+            },
+            {
+              "id": "b",
+              "category": "bullying",
+              "at": "2026-10-12T20:03:00Z",
+              "weight": 1
+            }
+          ]
+        },
+        {
+          "kind": "say",
+          "message": "conduct.departure"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "a",
+            "category": "bullying",
+            "at": "2026-10-12T20:00:00Z",
+            "weight": 2
+          },
+          {
+            "id": "b",
+            "category": "bullying",
+            "at": "2026-10-12T20:03:00Z",
+            "weight": 1
+          }
+        ],
+        "sealed": true,
+        "case_id": "case-b",
+        "time_out": null
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 5,
+      "event": {
+        "type": "strike_overturned",
+        "at": "2026-10-12T20:04:00Z",
+        "payload": {
+          "strike_id": "a"
+        },
+        "signals": {}
+      },
+      "from": "departed",
+      "outcome": "not_accepted",
+      "branch": null,
+      "when": null,
+      "to": "departed",
+      "actions": [],
+      "outputs": [],
+      "context": {
+        "strikes": [
+          {
+            "id": "a",
+            "category": "bullying",
+            "at": "2026-10-12T20:00:00Z",
+            "weight": 2
+          },
+          {
+            "id": "b",
+            "category": "bullying",
+            "at": "2026-10-12T20:03:00Z",
+            "weight": 1
+          }
+        ],
+        "sealed": true,
+        "case_id": "case-b",
+        "time_out": null
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 6,
+      "event": {
+        "type": "case_overturned",
+        "at": "2026-10-12T20:05:00Z",
+        "payload": {
+          "case_id": "case-b",
+          "overturned": [
+            "a",
+            "b"
+          ]
+        },
+        "signals": {}
+      },
+      "from": "departed",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "remove_strikes",
+          "args": {}
+        },
+        {
+          "action": "unseal",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.returned"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.returned"
+        }
+      ],
+      "context": {
+        "strikes": [],
+        "sealed": false,
+        "case_id": null,
+        "time_out": null
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 7,
+      "event": {
+        "type": "remark",
+        "at": "2026-10-12T20:06:00Z",
+        "payload": {
+          "exchange_id": "c"
+        },
+        "signals": {
+          "abuse": "hate"
+        }
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 1,
+      "when": "no_active_strikes",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "add_strike",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.warning"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.warning"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "c",
+            "category": "hate",
+            "at": "2026-10-12T20:06:00Z",
+            "weight": 1
+          }
+        ],
+        "sealed": false,
+        "case_id": null,
+        "time_out": null
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 8,
+      "event": {
+        "type": "remark",
+        "at": "2026-10-12T20:07:00Z",
+        "payload": {
+          "exchange_id": "d"
+        },
+        "signals": {
+          "abuse": "threat"
+        }
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 2,
+      "when": "one_active_strike",
+      "to": "timed_out",
+      "actions": [
+        {
+          "action": "add_strike",
+          "args": {}
+        },
+        {
+          "action": "start_time_out",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.time_out"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.time_out"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "c",
+            "category": "hate",
+            "at": "2026-10-12T20:06:00Z",
+            "weight": 1
+          },
+          {
+            "id": "d",
+            "category": "threat",
+            "at": "2026-10-12T20:07:00Z",
+            "weight": 1
+          }
+        ],
+        "sealed": false,
+        "case_id": null,
+        "time_out": {
+          "strike_id": "d",
+          "started_at": "2026-10-12T20:07:00Z",
+          "minutes": 240
+        }
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 9,
+      "event": {
+        "type": "penalty_set",
+        "at": "2026-10-12T20:08:00Z",
+        "payload": {
+          "strike_id": "d",
+          "weight": 3
+        },
+        "signals": {}
+      },
+      "from": "timed_out",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "timed_out",
+      "actions": [
+        {
+          "action": "set_strike_weight",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.penalty_set"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.penalty_set"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "c",
+            "category": "hate",
+            "at": "2026-10-12T20:06:00Z",
+            "weight": 1
+          },
+          {
+            "id": "d",
+            "category": "threat",
+            "at": "2026-10-12T20:07:00Z",
+            "weight": 3
+          }
+        ],
+        "sealed": false,
+        "case_id": null,
+        "time_out": {
+          "strike_id": "d",
+          "started_at": "2026-10-12T20:07:00Z",
+          "minutes": 240
+        }
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 10,
+      "event": {
+        "type": "resume",
+        "at": "2026-10-13T00:08:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "timed_out",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "time_out_over",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "end_time_out",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.welcome_back"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.welcome_back"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "c",
+            "category": "hate",
+            "at": "2026-10-12T20:06:00Z",
+            "weight": 1
+          },
+          {
+            "id": "d",
+            "category": "threat",
+            "at": "2026-10-12T20:07:00Z",
+            "weight": 3
+          }
+        ],
+        "sealed": false,
+        "case_id": null,
+        "time_out": null
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 11,
+      "event": {
+        "type": "strike_overturned",
+        "at": "2026-10-13T00:09:00Z",
+        "payload": {
+          "strike_id": "d"
+        },
+        "signals": {}
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "remove_strike",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.strike_overturned"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.strike_overturned"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "c",
+            "category": "hate",
+            "at": "2026-10-12T20:06:00Z",
+            "weight": 1
+          }
+        ],
+        "sealed": false,
+        "case_id": null,
+        "time_out": null
+      }
+    },
+    {
+      "record": "step",
+      "graph": "conduct",
+      "version": 2,
+      "instance": "conduct-appeals",
+      "seq": 12,
+      "event": {
+        "type": "appeal_refused",
+        "at": "2026-10-13T00:10:00Z",
+        "payload": {
+          "strike_id": "c"
+        },
+        "signals": {}
+      },
+      "from": "with_ward",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "with_ward",
+      "actions": [
+        {
+          "action": "say",
+          "args": {
+            "message": "conduct.appeal_refused"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "conduct.appeal_refused"
+        }
+      ],
+      "context": {
+        "strikes": [
+          {
+            "id": "c",
+            "category": "hate",
+            "at": "2026-10-12T20:06:00Z",
+            "weight": 1
+          }
+        ],
+        "sealed": false,
+        "case_id": null,
+        "time_out": null
+      }
+    }
+  ]
+}

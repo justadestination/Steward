@@ -1,0 +1,527 @@
+{
+  "graph": "introduction",
+  "policy": {
+    "kind": "reader_profile",
+    "handle": "ward",
+    "inbox": {
+      "hold_at": "strong"
+    }
+  },
+  "events": [
+    {
+      "type": "tap",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:01:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "read_past",
+      "at": "2026-10-12T20:02:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "reask",
+      "at": "2026-10-12T20:03:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "tap",
+      "at": "2026-10-12T20:04:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "tap",
+      "at": "2026-10-12T20:05:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "reask",
+      "at": "2026-10-12T20:06:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "escape",
+      "at": "2026-10-12T20:07:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "forget",
+      "at": "2026-10-12T20:08:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "show_question",
+      "at": "2026-10-12T20:09:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "tap",
+      "at": "2026-10-12T20:10:00Z",
+      "payload": {},
+      "signals": {}
+    }
+  ],
+  "context": {},
+  "instance": "introduction-full",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 0,
+      "state": "unmet",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 1,
+      "event": {
+        "type": "tap",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "unmet",
+      "outcome": "not_accepted",
+      "branch": null,
+      "when": null,
+      "to": "unmet",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 2,
+      "event": {
+        "type": "show_question",
+        "at": "2026-10-12T20:01:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "unmet",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "asking",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 3,
+      "event": {
+        "type": "read_past",
+        "at": "2026-10-12T20:02:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "asking",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "recorded",
+      "actions": [
+        {
+          "action": "record_answer",
+          "args": {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence"
+          }
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "introduction.recorded_yes"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "introduction.recorded_yes"
+        }
+      ],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence",
+            "at": "2026-10-12T20:02:00Z",
+            "corrects": null
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 4,
+      "event": {
+        "type": "reask",
+        "at": "2026-10-12T20:03:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "recorded",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "asking",
+      "actions": [],
+      "outputs": [],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence",
+            "at": "2026-10-12T20:02:00Z",
+            "corrects": null
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 5,
+      "event": {
+        "type": "tap",
+        "at": "2026-10-12T20:04:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "asking",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "recorded",
+      "actions": [
+        {
+          "action": "record_answer",
+          "args": {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "tap"
+          }
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "introduction.recorded_no"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "introduction.recorded_no"
+        }
+      ],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence",
+            "at": "2026-10-12T20:02:00Z",
+            "corrects": null
+          },
+          {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "tap",
+            "at": "2026-10-12T20:04:00Z",
+            "corrects": 0
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 6,
+      "event": {
+        "type": "tap",
+        "at": "2026-10-12T20:05:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "recorded",
+      "outcome": "not_accepted",
+      "branch": null,
+      "when": null,
+      "to": "recorded",
+      "actions": [],
+      "outputs": [],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence",
+            "at": "2026-10-12T20:02:00Z",
+            "corrects": null
+          },
+          {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "tap",
+            "at": "2026-10-12T20:04:00Z",
+            "corrects": 0
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 7,
+      "event": {
+        "type": "reask",
+        "at": "2026-10-12T20:06:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "recorded",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "asking",
+      "actions": [],
+      "outputs": [],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence",
+            "at": "2026-10-12T20:02:00Z",
+            "corrects": null
+          },
+          {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "tap",
+            "at": "2026-10-12T20:04:00Z",
+            "corrects": 0
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 8,
+      "event": {
+        "type": "escape",
+        "at": "2026-10-12T20:07:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "asking",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "recorded",
+      "actions": [
+        {
+          "action": "record_answer",
+          "args": {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "escape"
+          }
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "introduction.recorded_no"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "introduction.recorded_no"
+        }
+      ],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "yes",
+            "channel": "silence",
+            "at": "2026-10-12T20:02:00Z",
+            "corrects": null
+          },
+          {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "tap",
+            "at": "2026-10-12T20:04:00Z",
+            "corrects": 0
+          },
+          {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "escape",
+            "at": "2026-10-12T20:07:00Z",
+            "corrects": 1
+          }
+        ]
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 9,
+      "event": {
+        "type": "forget",
+        "at": "2026-10-12T20:08:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "recorded",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "unmet",
+      "actions": [
+        {
+          "action": "forget_answers",
+          "args": {}
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "introduction.forgotten"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "introduction.forgotten"
+        }
+      ],
+      "context": {
+        "answers": []
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 10,
+      "event": {
+        "type": "show_question",
+        "at": "2026-10-12T20:09:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "unmet",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "asking",
+      "actions": [],
+      "outputs": [],
+      "context": {
+        "answers": []
+      }
+    },
+    {
+      "record": "step",
+      "graph": "introduction",
+      "version": 1,
+      "instance": "introduction-full",
+      "seq": 11,
+      "event": {
+        "type": "tap",
+        "at": "2026-10-12T20:10:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "asking",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "recorded",
+      "actions": [
+        {
+          "action": "record_answer",
+          "args": {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "tap"
+          }
+        },
+        {
+          "action": "say",
+          "args": {
+            "message": "introduction.recorded_no"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "introduction.recorded_no"
+        }
+      ],
+      "context": {
+        "answers": [
+          {
+            "question": "interruptions",
+            "answer": "no",
+            "channel": "tap",
+            "at": "2026-10-12T20:10:00Z",
+            "corrects": null
+          }
+        ]
+      }
+    }
+  ]
+}

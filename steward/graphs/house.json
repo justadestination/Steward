@@ -1,0 +1,99 @@
+{
+  "graph": "house",
+  "version": 2,
+  "policy": "house_rules",
+  "initial": "received",
+  "terminal": [
+    "accepted",
+    "returned",
+    "withheld"
+  ],
+  "events": {
+    "review": {
+      "payload": [
+        "submission_id",
+        "sender",
+        "thread",
+        "text"
+      ],
+      "signals": [
+        "abuse"
+      ]
+    }
+  },
+  "states": {
+    "received": "A submission has arrived and has not been reviewed.",
+    "accepted": "Published.",
+    "returned": "Sent back to the sender, naming the posted rule.",
+    "withheld": "Kept out under R4. Recorded here; the sender is not told."
+  },
+  "transitions": [
+    {
+      "from": "received",
+      "on": "review",
+      "branches": [
+        {
+          "when": "sender_lacks_steward",
+          "to": "returned",
+          "do": [
+            {
+              "action": "return_to_sender",
+              "args": {
+                "rule": "R1",
+                "message": "house.needs_steward"
+              }
+            }
+          ]
+        },
+        {
+          "when": "abuse_is_hate",
+          "to": "withheld",
+          "do": [
+            {
+              "action": "withhold",
+              "args": {
+                "rule": "R4"
+              }
+            }
+          ]
+        },
+        {
+          "when": "abuse_at_strike_level",
+          "to": "returned",
+          "do": [
+            {
+              "action": "return_to_sender",
+              "args": {
+                "rule": "R2",
+                "message": "house.abuse"
+              }
+            }
+          ]
+        },
+        {
+          "when": "in_cool_off",
+          "to": "returned",
+          "do": [
+            {
+              "action": "return_to_sender",
+              "args": {
+                "rule": "R3",
+                "message": "house.cool_off"
+              }
+            }
+          ]
+        },
+        {
+          "when": "otherwise",
+          "to": "accepted",
+          "do": [
+            {
+              "action": "publish",
+              "args": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

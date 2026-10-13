@@ -1,0 +1,97 @@
+{
+  "graph": "inbox",
+  "policy": {
+    "kind": "reader_profile",
+    "handle": "ward",
+    "inbox": {
+      "hold_at": "strong"
+    }
+  },
+  "events": [
+    {
+      "type": "screen",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {
+        "message_id": "m2"
+      },
+      "signals": {
+        "hostility": "mild"
+      }
+    },
+    {
+      "type": "set_aside",
+      "at": "2026-10-12T20:01:00Z",
+      "payload": {},
+      "signals": {}
+    }
+  ],
+  "context": {},
+  "instance": "inbox-strong-threshold-delivers-mild",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-strong-threshold-delivers-mild",
+      "seq": 0,
+      "state": "arrived",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-strong-threshold-delivers-mild",
+      "seq": 1,
+      "event": {
+        "type": "screen",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {
+          "message_id": "m2"
+        },
+        "signals": {
+          "hostility": "mild"
+        }
+      },
+      "from": "arrived",
+      "outcome": "taken",
+      "branch": 1,
+      "when": "otherwise",
+      "to": "delivered",
+      "actions": [
+        {
+          "action": "deliver",
+          "args": {}
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "deliver",
+          "message_id": "m2"
+        }
+      ],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-strong-threshold-delivers-mild",
+      "seq": 2,
+      "event": {
+        "type": "set_aside",
+        "at": "2026-10-12T20:01:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "delivered",
+      "outcome": "not_accepted",
+      "branch": null,
+      "when": null,
+      "to": "delivered",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    }
+  ]
+}

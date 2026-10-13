@@ -1,0 +1,113 @@
+{
+  "graph": "inbox",
+  "policy": {
+    "kind": "reader_profile",
+    "handle": "ward",
+    "inbox": {
+      "hold_at": "mild"
+    }
+  },
+  "events": [
+    {
+      "type": "screen",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {
+        "message_id": "m1"
+      },
+      "signals": {
+        "hostility": "mild"
+      }
+    },
+    {
+      "type": "open",
+      "at": "2026-10-12T20:01:00Z",
+      "payload": {
+        "message_id": "m1"
+      },
+      "signals": {}
+    }
+  ],
+  "context": {},
+  "instance": "inbox-hold-mild-open",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-hold-mild-open",
+      "seq": 0,
+      "state": "arrived",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-hold-mild-open",
+      "seq": 1,
+      "event": {
+        "type": "screen",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {
+          "message_id": "m1"
+        },
+        "signals": {
+          "hostility": "mild"
+        }
+      },
+      "from": "arrived",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "hostile_toward_reader",
+      "to": "held",
+      "actions": [
+        {
+          "action": "say",
+          "args": {
+            "message": "inbox.held"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "say",
+          "message": "inbox.held"
+        }
+      ],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "inbox",
+      "version": 1,
+      "instance": "inbox-hold-mild-open",
+      "seq": 2,
+      "event": {
+        "type": "open",
+        "at": "2026-10-12T20:01:00Z",
+        "payload": {
+          "message_id": "m1"
+        },
+        "signals": {}
+      },
+      "from": "held",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "shown",
+      "actions": [
+        {
+          "action": "deliver",
+          "args": {}
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "deliver",
+          "message_id": "m1"
+        }
+      ],
+      "context": {}
+    }
+  ]
+}

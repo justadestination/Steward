@@ -1,0 +1,5 @@
+{
+  "abuse": ["none", "insult", "bullying", "hate", "threat"],
+  "profanity": ["no", "yes"],
+  "hostility": ["none", "mild", "strong"]
+}

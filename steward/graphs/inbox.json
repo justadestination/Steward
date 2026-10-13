@@ -1,0 +1,37 @@
+{
+  "graph": "inbox",
+  "version": 1,
+  "policy": "reader_profile",
+  "initial": "arrived",
+  "terminal": ["delivered", "shown", "set_aside"],
+  "events": {
+    "screen":    {"payload": ["message_id"], "signals": ["hostility"]},
+    "open":      {"payload": ["message_id"], "signals": []},
+    "set_aside": {"payload": [], "signals": []}
+  },
+  "states": {
+    "arrived":   "A message for the reader has arrived and has not been screened.",
+    "held":      "The message reaches the reader's hold level; the Steward has asked before showing it.",
+    "delivered": "Shown straight away.",
+    "shown":     "Shown after the reader chose to see it.",
+    "set_aside": "The reader chose not to see it."
+  },
+  "transitions": [
+    {"from": "arrived", "on": "screen", "branches": [
+      {"when": "hostile_toward_reader", "to": "held", "do": [
+        {"action": "say", "args": {"message": "inbox.held"}}
+      ]},
+      {"when": "otherwise", "to": "delivered", "do": [
+        {"action": "deliver", "args": {}}
+      ]}
+    ]},
+    {"from": "held", "on": "open", "branches": [
+      {"when": "otherwise", "to": "shown", "do": [
+        {"action": "deliver", "args": {}}
+      ]}
+    ]},
+    {"from": "held", "on": "set_aside", "branches": [
+      {"when": "otherwise", "to": "set_aside", "do": []}
+    ]}
+  ]
+}

@@ -1,0 +1,329 @@
+{
+  "cases": [
+    {
+      "name": "valid at the posted difficulty",
+      "mail": {
+        "mail_id": "m-0001",
+        "case_id": "case-x3",
+        "text": "my Steward left and I think it was wrong"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "1903b"
+      },
+      "arrived_at": "2026-10-13T20:03:00Z",
+      "bits": 18,
+      "max_age_minutes": 10,
+      "error": null
+    },
+    {
+      "name": "valid, unicode text, no case",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": null
+    },
+    {
+      "name": "one bit short",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 13,
+      "max_age_minutes": 10,
+      "error": "not enough work"
+    },
+    {
+      "name": "text changed after minting",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok!"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "not enough work"
+    },
+    {
+      "name": "null case_id is not empty case_id",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": "",
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "not enough work"
+    },
+    {
+      "name": "ten minutes old is fine",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:10:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": null
+    },
+    {
+      "name": "eleven minutes old",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:11:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "too old"
+    },
+    {
+      "name": "two minutes early is fine",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T19:58:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": null
+    },
+    {
+      "name": "three minutes early",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T19:57:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "future"
+    },
+    {
+      "name": "uppercase nonce",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15E6A"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "nonce"
+    },
+    {
+      "name": "long nonce",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "00000000000000000"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "nonce"
+    },
+    {
+      "name": "version 2",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 2,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "version"
+    },
+    {
+      "name": "version true",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": true,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "version"
+    },
+    {
+      "name": "extra stamp key",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6",
+        "who": "me"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "stamp keys"
+    },
+    {
+      "name": "bad stamp time",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13 20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "stamp time"
+    },
+    {
+      "name": "bad mail_id",
+      "mail": {
+        "mail_id": "has space",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "mail_id"
+    },
+    {
+      "name": "empty text",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": ""
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "text must"
+    },
+    {
+      "name": "lone surrogate",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "\ud800"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "Unicode"
+    },
+    {
+      "name": "extra mail key",
+      "mail": {
+        "mail_id": "m-0002",
+        "case_id": null,
+        "text": "see you there \u2728 \u2014 ok",
+        "from": "x"
+      },
+      "stamp": {
+        "v": 1,
+        "at": "2026-10-13T20:00:00Z",
+        "nonce": "15e6"
+      },
+      "arrived_at": "2026-10-13T20:00:00Z",
+      "bits": 12,
+      "max_age_minutes": 10,
+      "error": "mail keys"
+    }
+  ]
+}

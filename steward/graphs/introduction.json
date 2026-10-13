@@ -1,0 +1,58 @@
+{
+  "graph": "introduction",
+  "version": 1,
+  "policy": "reader_profile",
+  "initial": "unmet",
+  "terminal": [],
+  "events": {
+    "show_question": {"payload": [], "signals": []},
+    "tap":           {"payload": [], "signals": []},
+    "escape":        {"payload": [], "signals": []},
+    "read_past":     {"payload": [], "signals": []},
+    "reask":         {"payload": [], "signals": []},
+    "forget":        {"payload": [], "signals": []}
+  },
+  "states": {
+    "unmet":    "The Steward has not asked anything yet, or has forgotten everything.",
+    "asking":   "The question is on screen and its window is open.",
+    "recorded": "An answer is in force. The line stays tappable so it can be asked again."
+  },
+  "transitions": [
+    {"from": "unmet", "on": "show_question", "branches": [
+      {"when": "otherwise", "to": "asking", "do": []}
+    ]},
+    {"from": "asking", "on": "tap", "branches": [
+      {"when": "otherwise", "to": "recorded", "do": [
+        {"action": "record_answer", "args": {"question": "interruptions", "answer": "no", "channel": "tap"}},
+        {"action": "say", "args": {"message": "introduction.recorded_no"}}
+      ]}
+    ]},
+    {"from": "asking", "on": "escape", "branches": [
+      {"when": "otherwise", "to": "recorded", "do": [
+        {"action": "record_answer", "args": {"question": "interruptions", "answer": "no", "channel": "escape"}},
+        {"action": "say", "args": {"message": "introduction.recorded_no"}}
+      ]}
+    ]},
+    {"from": "asking", "on": "read_past", "branches": [
+      {"when": "otherwise", "to": "recorded", "do": [
+        {"action": "record_answer", "args": {"question": "interruptions", "answer": "yes", "channel": "silence"}},
+        {"action": "say", "args": {"message": "introduction.recorded_yes"}}
+      ]}
+    ]},
+    {"from": "asking", "on": "forget", "branches": [
+      {"when": "otherwise", "to": "unmet", "do": [
+        {"action": "forget_answers", "args": {}},
+        {"action": "say", "args": {"message": "introduction.forgotten"}}
+      ]}
+    ]},
+    {"from": "recorded", "on": "reask", "branches": [
+      {"when": "otherwise", "to": "asking", "do": []}
+    ]},
+    {"from": "recorded", "on": "forget", "branches": [
+      {"when": "otherwise", "to": "unmet", "do": [
+        {"action": "forget_answers", "args": {}},
+        {"action": "say", "args": {"message": "introduction.forgotten"}}
+      ]}
+    ]}
+  ]
+}

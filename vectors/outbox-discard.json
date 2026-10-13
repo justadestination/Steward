@@ -1,0 +1,164 @@
+{
+  "graph": "outbox",
+  "policy": {
+    "kind": "house_rules",
+    "version": 5,
+    "posted": "2026-10-13T00:00:00Z",
+    "rules": [
+      {
+        "id": "R1",
+        "text": "Posting, voting and submitting go through a Steward. Everyone can read."
+      },
+      {
+        "id": "R2",
+        "text": "No bullying, harassment or threats. Swearing is fine, and so is the odd slip."
+      },
+      {
+        "id": "R3",
+        "text": "Two posts in a row in one thread is the limit. After that, wait until someone else posts or until 30 minutes have passed since your last one."
+      },
+      {
+        "id": "R4",
+        "text": "Submissions that preach hate are not published, and the sender is not told which ones."
+      },
+      {
+        "id": "R5",
+        "text": "Speak to a Steward as you would to a person. Bullying, hate or threats toward a Steward are strikes: the first is a warning, the second a time-out of one to four hours, and at the third your Steward leaves. Strikes expire after 90 days."
+      },
+      {
+        "id": "R6",
+        "text": "When a Steward leaves, an operator reviews the case after 24 hours. If it is not reviewed within 72 hours, it is overturned. If upheld, a new Steward is issued and starts over; the mark carries forward, nothing else does. If a departure is later overturned on appeal, the original Steward returns with everything it knew, and the new one is retired."
+      },
+      {
+        "id": "R7",
+        "text": "Every strike and every departure can be appealed within 14 days. If an appeal is found frivolous, the operator sets the penalty: the strike or mark may count for up to three."
+      },
+      {
+        "id": "R8",
+        "text": "@dontwastemytime always reaches the operators: from anyone, in any state, with or without a Steward. Nothing sent there is returned, withheld or counted as a strike, and no one else may use that name. Mail sent there carries a moment of the sender's device's work, which identifies no one."
+      }
+    ],
+    "addresses": {
+      "operators": "dontwastemytime"
+    },
+    "parameters": {
+      "max_consecutive_posts": 2,
+      "cool_off_minutes": 30,
+      "strike_expiry_days": 90,
+      "review_wait_hours": 24,
+      "review_deadline_hours": 72,
+      "review_warning_hours": 12,
+      "appeal_window_days": 14,
+      "appeal_review_hours": 72,
+      "frivolous_max_weight": 3,
+      "operator_stamp_bits": 18,
+      "operator_stamp_max_age_minutes": 10
+    },
+    "conduct": {
+      "strike_categories": [
+        "bullying",
+        "hate",
+        "threat"
+      ],
+      "time_out_minutes": {
+        "bullying": 60,
+        "hate": 240,
+        "threat": 240
+      }
+    },
+    "terms": {
+      "profanity": [
+        "examplecurse"
+      ],
+      "insult": [
+        "exampleinsult"
+      ],
+      "bullying": [
+        "examplebully"
+      ],
+      "hate": [
+        "examplehate"
+      ],
+      "threat": [
+        "examplethreat"
+      ]
+    }
+  },
+  "events": [
+    {
+      "type": "discard",
+      "at": "2026-10-12T20:00:00Z",
+      "payload": {},
+      "signals": {}
+    },
+    {
+      "type": "submit",
+      "at": "2026-10-12T20:01:00Z",
+      "payload": {
+        "text": "late"
+      },
+      "signals": {
+        "abuse": "none"
+      }
+    }
+  ],
+  "context": {},
+  "instance": "outbox-discard",
+  "expected": [
+    {
+      "record": "start",
+      "graph": "outbox",
+      "version": 2,
+      "instance": "outbox-discard",
+      "seq": 0,
+      "state": "drafting",
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "outbox",
+      "version": 2,
+      "instance": "outbox-discard",
+      "seq": 1,
+      "event": {
+        "type": "discard",
+        "at": "2026-10-12T20:00:00Z",
+        "payload": {},
+        "signals": {}
+      },
+      "from": "drafting",
+      "outcome": "taken",
+      "branch": 0,
+      "when": "otherwise",
+      "to": "discarded",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    },
+    {
+      "record": "step",
+      "graph": "outbox",
+      "version": 2,
+      "instance": "outbox-discard",
+      "seq": 2,
+      "event": {
+        "type": "submit",
+        "at": "2026-10-12T20:01:00Z",
+        "payload": {
+          "text": "late"
+        },
+        "signals": {
+          "abuse": "none"
+        }
+      },
+      "from": "discarded",
+      "outcome": "not_accepted",
+      "branch": null,
+      "when": null,
+      "to": "discarded",
+      "actions": [],
+      "outputs": [],
+      "context": {}
+    }
+  ]
+}
