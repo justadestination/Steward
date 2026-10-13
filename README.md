@@ -1,7 +1,24 @@
 # Steward and House
 
-Deterministic graphs of pre-defined actions. Python 3.11+ (stdlib) on the
-server, plain ES modules in the PWA. No dependencies.
+**The Steward** is a personal agent that lives in a phone app. It's the way
+into ShadeNet: anyone can read NightCal, the public night calendar, but
+posting, voting, submitting and messaging all go through a Steward. It holds
+its ward's preferences, screens their mail, checks their posts against the
+posted rules before they leave, and explains itself whenever it holds
+anything back. We know which Steward someone is with, never who they are.
+
+**The House** is the platform's side. It upholds the posted rules
+(`policy/house_rules.json`) and nothing that isn't posted. It runs strike
+reviews and appeals, and every action it takes cites a rule by id.
+
+Both are built from **deterministic graphs of pre-defined actions**: every
+decision is a declared branch, every input is recorded, and every ledger can
+be replayed to the same result. Python 3.11+ (stdlib) on the server, plain
+ES modules in the PWA. No dependencies.
+
+Status: working core, not yet wired into an app. See **Open** below.
+
+## Commands
 
 ```
 python3 -m steward check                 # validate every graph + the posted rules
@@ -124,3 +141,7 @@ are anonymous.
 - **Wording:** every line in `messages.json` is a placeholder until it's
   written in the Steward's voice.
 - Next graphs: activation, signed character file, restore-on-connect.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE).
