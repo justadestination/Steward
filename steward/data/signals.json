@@ -1,5 +1,7 @@
 {
   "abuse": ["none", "insult", "bullying", "hate", "threat"],
   "profanity": ["no", "yes"],
-  "hostility": ["none", "mild", "strong"]
+  "hostility": ["none", "mild", "strong"],
+  "over_21": ["yes", "no"],
+  "presentation_valid": ["yes", "no"]
 }

@@ -1,0 +1,82 @@
+{
+  "graph": "activation",
+  "version": 1,
+  "policy": "house_rules",
+  "initial": "requested",
+  "terminal": [
+    "scrubbed"
+  ],
+  "events": {
+    "request": {
+      "payload": [
+        "blinded_msg",
+        "presentation"
+      ],
+      "signals": []
+    },
+    "verdict": {
+      "payload": [],
+      "signals": [
+        "over_21",
+        "presentation_valid"
+      ]
+    },
+    "scrub": {
+      "payload": [],
+      "signals": []
+    }
+  },
+  "states": {
+    "requested": "Activation request received with blinded Steward ID and presentation.",
+    "signed": "Blind signature issued.",
+    "refused": "Activation refused.",
+    "scrubbed": "Request scrubbed; no evidence retained."
+  },
+  "transitions": [
+    {
+      "from": "requested",
+      "on": "verdict",
+      "branches": [
+        {
+          "when": "presentation_valid_and_over_21",
+          "to": "signed",
+          "do": []
+        },
+        {
+          "when": "otherwise",
+          "to": "refused",
+          "do": [
+            {
+              "action": "say",
+              "args": {
+                "message": "activation.refused"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "from": "signed",
+      "on": "scrub",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "scrubbed",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "refused",
+      "on": "scrub",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "scrubbed",
+          "do": []
+        }
+      ]
+    }
+  ]
+}

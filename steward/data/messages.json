@@ -25,5 +25,6 @@
   "review.appeal_lapsed": "An appeal was not ruled on in time and has been granted.",
   "review.penalty_invalid": "That penalty is outside the posted limits (rule R7). Choose between 1 and 3.",
   "operators.sent": "Sent to @dontwastemytime. A person will read it.",
-  "review.operator_mail": "New mail at @dontwastemytime."
+  "review.operator_mail": "New mail at @dontwastemytime.",
+  "activation.refused": "Activation request could not be completed."
 }
