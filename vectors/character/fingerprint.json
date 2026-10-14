@@ -1,0 +1,39 @@
+{
+  "about": "canonical = JSON, sorted keys, separators (',', ':'), non-ASCII unescaped, UTF-8; fingerprint = base64url unpadded SHA-256 of canonical bytes",
+  "cases": [
+    {
+      "name": "skeleton",
+      "character": {
+        "version": 1,
+        "voice": {},
+        "rules": {},
+        "source": "Owner writes the voice; see Steward-ID.md"
+      },
+      "canonical_hex": "7b2272756c6573223a7b7d2c22736f75726365223a224f776e6572207772697465732074686520766f6963653b2073656520537465776172642d49442e6d64222c2276657273696f6e223a312c22766f696365223a7b7d7d",
+      "fingerprint": "xKUJGA5mkvom3JLmQqkzPp4CR_7IbF9GIImJ_gkV7mc"
+    },
+    {
+      "name": "non_ascii",
+      "character": {
+        "version": 2,
+        "voice": {
+          "name": "Stéward",
+          "greeting": "こんにちは — ça va? ✨🌙",
+          "quiet": true
+        },
+        "rules": {
+          "z_last": [
+            "ä",
+            "ß",
+            "名前"
+          ],
+          "a_first": null,
+          "escapes": "quote\" back\\ nl\n tab\t ctl\u0001"
+        },
+        "source": "Ünïcödé test example, not a real character"
+      },
+      "canonical_hex": "7b2272756c6573223a7b22615f6669727374223a6e756c6c2c2265736361706573223a2271756f74655c22206261636b5c5c206e6c5c6e207461625c742063746c5c7530303031222c227a5f6c617374223a5b22c3a4222c22c39f222c22e5908de5898d225d7d2c22736f75726365223a22c39c6ec3af63c3b664c3a92074657374206578616d706c652c206e6f742061207265616c20636861726163746572222c2276657273696f6e223a322c22766f696365223a7b226772656574696e67223a22e38193e38293e381abe381a1e381af20e2809420c3a7612076613f20e29ca8f09f8c99222c226e616d65223a225374c3a977617264222c227175696574223a747275657d7d",
+      "fingerprint": "tRD7Nf4mPu_JzTW9xnBcKKVbMq5oO6YrWGXp1am4yds"
+    }
+  ]
+}

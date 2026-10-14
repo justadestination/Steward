@@ -1,9 +1,10 @@
 // The Steward's conditions and actions, for the PWA.
 //
 // Mirrors steward/conditions.py and steward/actions.py for every name the
-// Steward graphs use (introduction, outbox, inbox, conduct). House, review
-// and appeal names are deliberately absent: those run only on the server,
-// and a graph naming one is refused at load.
+// Steward graphs use (introduction, outbox, inbox, conduct, operator_line,
+// restore). House, review, appeal and activation names are deliberately
+// absent: those run only on the server, and a graph naming one is refused
+// at load.
 //
 // Same rules as Python: conditions return a real boolean; actions return
 // { updates, outputs } and never touch storage, network or the clock.
@@ -40,6 +41,16 @@ export function makeRegistry(signalValues) {
       minutesBetween(context.time_out.started_at, event.at) >= context.time_out.minutes,
     strike_holds_time_out: (event, context) =>
       context.time_out != null && context.time_out.strike_id === event.payload.strike_id,
+
+    // ---- restore ----
+
+    // The Steward's character file is the House's current one. Both
+    // fingerprints travel on the event (local, and the House's from the
+    // /connect reply); nothing is read from the policy.
+    fingerprint_matches: (event) => {
+      const { local_fingerprint: local, house_fingerprint: house } = event.payload;
+      return typeof local === "string" && typeof house === "string" && local === house;
+    },
   };
 
   const none = (updates = {}) => ({ updates, outputs: [] });

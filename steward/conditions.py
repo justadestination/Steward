@@ -113,9 +113,13 @@ def strike_holds_time_out(event: Event, context: Mapping[str, Any], policy: Mapp
 
 # ---- Restore --------------------------------------------------------------
 
-@condition("fingerprint_matches", payload=("fingerprint",))
+@condition("fingerprint_matches", payload=("local_fingerprint", "house_fingerprint"))
 def fingerprint_matches(event: Event, context: Mapping[str, Any], policy: Mapping[str, Any]) -> bool:
-    return event.payload["fingerprint"] == policy["character"]["fingerprint"]
+    """The Steward's copy of its character file is the House's current one.
+    Both fingerprints travel on the event: the local one from the phone, the
+    House's from the /connect reply. Nothing is read from the policy."""
+    local, house = event.payload["local_fingerprint"], event.payload["house_fingerprint"]
+    return isinstance(local, str) and isinstance(house, str) and local == house
 
 
 @condition("presentation_valid_and_over_21", signals=("over_21", "presentation_valid"))

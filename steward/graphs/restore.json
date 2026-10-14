@@ -1,6 +1,6 @@
 {
   "graph": "restore",
-  "version": 1,
+  "version": 2,
   "policy": "house_rules",
   "initial": "connect",
   "terminal": [
@@ -9,21 +9,22 @@
   "events": {
     "connect": {
       "payload": [
-        "fingerprint"
+        "local_fingerprint",
+        "house_fingerprint"
       ],
       "signals": []
     },
     "restore": {
       "payload": [
-        "signed_file"
+        "fingerprint"
       ],
       "signals": []
     }
   },
   "states": {
-    "connect": "Steward connects with fingerprint of local character file.",
-    "in_sync": "Character file matches House.",
-    "restore": "House provides signed character file; Steward replaces local copy after verification."
+    "connect": "Steward connects; carries its own character fingerprint and the one the House returned.",
+    "in_sync": "Character file matches the House's current signed file.",
+    "restore": "Fingerprints differ; the Steward replaces its copy with the House's signed file once verifyCharacter accepts it."
   },
   "transitions": [
     {

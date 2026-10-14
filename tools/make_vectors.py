@@ -217,6 +217,25 @@ def main() -> int:
         e("remark", T(0), {"exchange_id": "x"}),
         e("case_final", T(0), {}),
     ])
+    # ---- restore: the phone compares its character fingerprint with the House's.
+    # `restore` is sent only after pwa/character.js verifyCharacter accepts the file.
+    sys.path.insert(0, str(ROOT))
+    from steward.character import fingerprint, load
+    house_fp = fingerprint(load())
+    local_fp = fingerprint({**load(), "voice": {"tampered": "yes"}})
+    write("restore-match", graph="restore", policy=RULES, events=[
+        e("connect", T(0), {"local_fingerprint": house_fp, "house_fingerprint": house_fp}),
+        e("restore", T(1), {"fingerprint": house_fp}),  # already in sync: not accepted
+    ])
+    write("restore-mismatch", graph="restore", policy=RULES, events=[
+        e("connect", T(0), {"local_fingerprint": local_fp, "house_fingerprint": house_fp}),
+        e("restore", T(1), {"fingerprint": house_fp}),
+    ])
+    write("restore-rejects", graph="restore", policy=RULES, rejects=[
+        e("connect", T(0), {"fingerprint": house_fp}),
+        e("connect", T(0), {"local_fingerprint": house_fp}),
+        e("restore", T(0), {"signed_file": {}}),
+    ])
     write_stamp_cases()
     print(f"wrote {len(list(D.glob('*.json')))} vector inputs and {STAMPS.name}/cases.json")
     return 0
