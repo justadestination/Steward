@@ -29,6 +29,15 @@ carries these headers:
   X-Steward-Date   UTC "YYYY-MM-DDTHH:MM:SSZ"
   X-Steward-Sig    base64url raw r||s, 64 bytes
 
+All binary header values are base64url without padding. The signature is raw
+r||s (IEEE P1363, 32 bytes each), not DER: that is what WebCrypto ECDSA
+produces. A server using `cryptography` must convert it with
+`encode_dss_signature(r, s)` before calling `verify`.
+
+In the PWA, `signRequest(keyPair, req)` sends X-Steward-Id, X-Steward-Date and
+X-Steward-Sig; `signRequest(keyPair, req, { includeKey: true })` also sends
+X-Steward-Key, and is used only for register.
+
 The signed string is a canonical representation of the request, UTF-8 with no
 trailing newline:
 
@@ -44,7 +53,7 @@ The Steward first registers its public key:
 
   1. Derive the Steward ID from the SPKI DER (the same formula as above).
   2. Sign a `{steward_id}` body with the signed-string construction.
-  3. Send `POST /register` with the four headers above.
+  3. Send `POST /register` with the four headers above (`includeKey: true`).
 
 The server derives the Steward ID from the SPKI it received, verifies the
 ECDSA P-256 signature, and stores the public key. No private key ever crosses
@@ -56,3 +65,15 @@ Verification is not stdlib: the server performs it with `cryptography`
 (KeyObject.verify), and the PWA performs the analogous check with
 `crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'}, publicKey, signature,
 signedString)`.
+
+## Test vector
+
+`vectors/identity/signing.json` is written by
+`node tools/make_identity_vector.mjs` (JS, because stdlib Python cannot sign
+ECDSA). The script imports a fixed P-256 key labelled TEST ONLY, builds the
+signed string for a register request, signs it with WebCrypto and writes
+`spki_der` (hex), `spki_der_b64url`, `steward_id`, `body_digest`,
+`signed_string` and the four headers (base64url, unpadded). The signature is
+raw r||s (IEEE P1363), not DER. ECDSA signatures are randomized, so the
+signature changes on each run; both test suites check it by shape and the JS
+suite verifies it with WebCrypto, never byte for byte.

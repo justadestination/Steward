@@ -78,25 +78,34 @@ export async function persistStewardKey(keyPair) {
   });
 }
 
+// exportKey returns a Promise: it must be awaited, or every key hashes the
+// same empty buffer and yields one shared Steward ID.
+async function exportSpki(publicKey) {
+  return new Uint8Array(await globalThis.crypto.subtle.exportKey("spki", publicKey));
+}
+
 export async function stewardId(publicKey) {
-  const spki = new Uint8Array(globalThis.crypto.subtle.exportKey("spki", publicKey));
+  const spki = await exportSpki(publicKey);
   const digest = await sha256(spki);
   return "stw_" + base64Url(digest);
 }
 
-export async function signRequest(keyPair, { method, path, date, body }) {
+// Signs a request. X-Steward-Key is sent only on register: pass
+// { includeKey: true } for that request and leave it off everywhere else.
+// X-Steward-Sig is raw r||s (IEEE P1363, 64 bytes), which is what WebCrypto
+// ECDSA produces; it is not DER.
+export async function signRequest(keyPair, { method, path, date, body }, { includeKey = false } = {}) {
   const message = new TextEncoder().encode(
     `${method}\n${path}\n${date}\n${await base64UrlDigest(body)}`,
   );
   const sig = new Uint8Array(
     await globalThis.crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, keyPair.privateKey, message),
   );
-  return {
-    "X-Steward-Id": await stewardId(keyPair.publicKey),
-    "X-Steward-Key": base64Url(new Uint8Array(await globalThis.crypto.subtle.exportKey("spki", keyPair.publicKey))),
-    "X-Steward-Date": date,
-    "X-Steward-Sig": base64Url(sig),
-  };
+  const headers = { "X-Steward-Id": await stewardId(keyPair.publicKey) };
+  if (includeKey) headers["X-Steward-Key"] = base64Url(await exportSpki(keyPair.publicKey));
+  headers["X-Steward-Date"] = date;
+  headers["X-Steward-Sig"] = base64Url(sig);
+  return headers;
 }
 
 // ---- helpers ---------------------------------------------------------------
