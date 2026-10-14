@@ -1,3 +1,6 @@
 __pycache__/
 .pytest_cache/
 *.ledger.jsonl
+
+# Moved-aside files (never deleted, never committed)
+.graveyard/
