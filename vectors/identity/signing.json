@@ -1,0 +1,16 @@
+{
+  "source": "openssl EC P-256 (ECDSA), manual",
+  "spki_der": "3059301306072a8648ce3d020106082a8648ce3d030107034200043de05d4c90f1fe186f108e99ec1da0c892004302573fcfffd0715c77c1dcd05576163cdd9d15b3451b045b8b935ac78e5b8247b679ddb17350ce3c2228198d75",
+  "spki_der_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPeBdTJDx/hhvEI6Z7B2gyJIAQwJXP8//0HFcd8Hc0FV2FjzdnRWzRRsEW4uTWseOW4JHtnndsXNQzjwiKBmNdQ==",
+  "steward_id": "stw_FkNXRMq6QcYPV-oUREGk0GWIwL4JqItv9pjRym7-5Ak",
+  "method": "POST",
+  "path": "/register",
+  "date": "2026-10-12T20:00:00Z",
+  "body": "{\"steward_id\":\"stw_FkNXRMq6QcYPV-oUREGk0GWIwL4JqItv9pjRym7-5Ak\"}",
+  "body_digest": "1td-TvaCGOQhLj8H0vo_Igs6IvtYxsIBFH9zbxKl9qI",
+  "signed_string": "POST\n/register\n2026-10-12T20:00:00Z\n1td-TvaCGOQhLj8H0vo_Igs6IvtYxsIBFH9zbxKl9qI",
+  "X-Steward-Id": "stw_FkNXRMq6QcYPV-oUREGk0GWIwL4JqItv9pjRym7-5Ak",
+  "X-Steward-Key": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPeBdTJDx/hhvEI6Z7B2gyJIAQwJXP8//0HFcd8Hc0FV2FjzdnRWzRRsEW4uTWseOW4JHtnndsXNQzjwiKBmNdQ==",
+  "X-Steward-Date": "2026-10-12T20:00:00Z",
+  "X-Steward-Sig": "MEUCIAkE3HbSbXqrCON1_3devLiJIWNH2zP6FsgDDtfKDsgsAiEA-R34bge2qJegtRrdnnNkxdYRjgg7TJoEpdSvyIb8HeI"
+}
