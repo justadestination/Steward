@@ -8,10 +8,7 @@
   ],
   "events": {
     "request": {
-      "payload": [
-        "blinded_msg",
-        "presentation"
-      ],
+      "payload": [],
       "signals": []
     },
     "verdict": {
@@ -27,7 +24,8 @@
     }
   },
   "states": {
-    "requested": "Activation request received with blinded Steward ID and presentation.",
+    "requested": "Activation request received; the runner holds it outside the graph.",
+    "checked": "Request accepted for checking; awaiting the age checker's verdict.",
     "signed": "Blind signature issued.",
     "refused": "Activation refused.",
     "scrubbed": "Request scrubbed; no evidence retained."
@@ -35,6 +33,17 @@
   "transitions": [
     {
       "from": "requested",
+      "on": "request",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "checked",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "checked",
       "on": "verdict",
       "branches": [
         {
