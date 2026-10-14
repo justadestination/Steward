@@ -111,7 +111,7 @@ def strike_holds_time_out(event: Event, context: Mapping[str, Any], policy: Mapp
     return t is not None and t["strike_id"] == event.payload["strike_id"]
 
 
-# ---- Restore --------------------------------------------------------------
+# ---- Restore: character file on connect, run on the phone -------------------
 
 @condition("fingerprint_matches", payload=("local_fingerprint", "house_fingerprint"))
 def fingerprint_matches(event: Event, context: Mapping[str, Any], policy: Mapping[str, Any]) -> bool:
@@ -122,10 +122,14 @@ def fingerprint_matches(event: Event, context: Mapping[str, Any], policy: Mappin
     return isinstance(local, str) and isinstance(house, str) and local == house
 
 
+# ---- Activation: over-21 check, run by the server ---------------------------
+
 @condition("presentation_valid_and_over_21", signals=("over_21", "presentation_valid"))
 def presentation_valid_and_over_21(event: Event, context: Mapping[str, Any], policy: Mapping[str, Any]) -> bool:
     return event.signals["presentation_valid"] == "yes" and event.signals["over_21"] == "yes"
 
+
+# ---- Review and appeals (R6, R7), run by the server -------------------------
 
 def _hours_since(context: Mapping[str, Any], key: str, at: str) -> float:
     return minutes_between(context[key], at) / 60

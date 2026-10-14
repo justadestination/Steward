@@ -26,6 +26,7 @@ python3 -m steward describe conduct      # Mermaid state diagram
 python3 -m steward run introduction --events examples/introduction.events.jsonl \
         --policy policy/reader_profile.example.json [--ledger out.jsonl]
 python3 tools/make_vectors.py            # rewrite shared vector inputs
+python3 tools/make_character_vector.py   # rewrite vectors/character/fingerprint.json
 python3 -m steward vectors [--write]     # check (or fill) expected records
 python3 -m pytest -q                     # Python engine
 npm test                                 # PWA engine against the same vectors
@@ -35,8 +36,8 @@ npm test                                 # PWA engine against the same vectors
 
 | Where | Graphs |
 |---|---|
-| **PWA** (`pwa/`) | `introduction`, `outbox`, `inbox`, `conduct`, `operator_line` |
-| **Server** (`steward/`) | `house`, `review`, `strike_appeal`, `operator_inbox`; also `check` and generating vectors |
+| **PWA** (`pwa/`) | `introduction`, `outbox`, `inbox`, `conduct`, `operator_line`, `restore` |
+| **Server** (`steward/`) | `house`, `review`, `strike_appeal`, `operator_inbox`, `activation`; also `check` and generating vectors |
 
 Both engines load the same graph JSON. `vectors/` holds event sequences and
 the exact ledger records the Python engine produced; the JS engine must
@@ -82,6 +83,8 @@ contract.
 | `review` | Server | R6. No ruling for 24h. An operator rules by 72h, or the case lapses in the ward's favour (with a warning to operators at 60h). Upheld: mark on the line and a successor issued; the ward's data stays sealed on the phone through the 14-day appeal window. Overturned on appeal: the original Steward returns with all preferences and memories, and the successor is retired. Frivolous: the operator sets the mark's weight, 1–3. |
 | `strike_appeal` | Server | R7. Any strike, within 14 days. Upheld, overturned, or frivolous: the operator sets what the strike counts for, 1–3 (the posted limit; anything outside it is refused). No ruling within 72h means it's granted. |
 | `operator_inbox` | Server | R8. Files everything, labelled with its abuse signal so operators know what they're opening. One branch, one outcome. |
+| `activation` | Server | One over-21 check: `request` → `verdict` → signed or refused → `scrub`. Signs only when the presentation is valid and over 21. The ledger holds the path and the two yes/no signals, nothing from the request. |
+| `restore` | PWA | On connect, compares the fingerprint of the Steward's character file with the House's. Equal: in sync. Different: waits for the House's signed file, which the PWA verifies before sending `restore`. Never touches the reader profile. |
 
 **Runner rules for R8**, which a graph can't express:
 - The PWA offers `operator_line` in every `conduct` state, including timed-out and departed.
@@ -138,13 +141,43 @@ are anonymous.
 - **What marks do** to a line is undecided.
 - **Wording:** every line in `messages.json` is a placeholder until it's
   written in the Steward's voice.
-- Next graphs: signed character file, restore-on-connect.
+- **Character voice:** `steward/data/character.json` is an empty skeleton;
+  the owner writes the voice.
+- **Presentation check:** `run_activation` takes `verify_presentation` and
+  `signer` as arguments and is tested with stubs. The real mDL check, the
+  trusted-issuer list, and the test issuer are not built.
+- **Server side of request signing:** the phone signs; the server does not
+  yet verify those signatures (needs ECDSA, outside the stdlib).
+- **House signing of the character file:** the phone verifies Ed25519
+  signatures; signing on the server (House key) and the `/connect` reply that
+  carries the House's fingerprint are not built.
+- **Transport** for activation, register and connect: no HTTP endpoints yet.
 
 ## Built
 
-- **Activation.** Over-21 proof, Steward keys, and the scrubbed container. Built
-  against a test issuer so development is never blocked.
-- **Steward identity and request signing.** Steward ID is `stw_` + base64url(SHA-256(SPKI DER)). Requests are signed with ECDSA P-256, headers `X-Steward-Id`, `X-Steward-Date`, `X-Steward-Sig`, signed string `METHOD \\n PATH \\n DATE \\n base64url(SHA-256(body))`.
+Each item below passes its tests in `python3 -m pytest -q` and `npm test`.
+
+- **RSA blind signatures** (RFC 9474, RSABSSA-SHA384-PSS-Randomized), in
+  `steward/blind.py` and `pwa/blind.js`. Both reproduce the RFC's Appendix A
+  vectors and each other's output (`vectors/blind/`).
+- **Activation runner.** `steward/activation.py` drives the `activation`
+  graph with injected `verify_presentation` and `signer`; valid and over 21
+  is signed, everything else (including a verifier error or a malformed
+  request) is refused; the request is cleared on return and the ledger holds
+  no payload bytes.
+- **Token redemption.** `steward/register.py` `redeem()` registers a Steward
+  key once: the token must name that key's Steward ID, verify under the
+  checker's key, and not have been used before.
+- **Steward identity and request signing (phone side).** Steward ID is `stw_` +
+  base64url(SHA-256(SPKI DER)). Requests are signed with ECDSA P-256, raw
+  r‖s, headers `X-Steward-Id`, `X-Steward-Date`, `X-Steward-Sig` (plus
+  `X-Steward-Key` on register), signed string `METHOD \n PATH \n DATE \n
+  base64url(SHA-256(body))`. See `docs/request-signing.md`.
+- **Signed character file and restore-on-connect (phone side).**
+  `steward/character.py` and `pwa/character.js` produce the same canonical
+  bytes and fingerprint (`vectors/character/fingerprint.json`).
+  `verifyCharacter` checks the House's Ed25519 signature and the fingerprint;
+  only then does the PWA send `restore` to the `restore` graph.
 
 ## License
 
