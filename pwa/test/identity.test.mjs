@@ -37,13 +37,16 @@ const root = resolve(fileURLToPath(new URL("../..", import.meta.url)));
 const json = (path) => JSON.parse(readFileSync(join(root, path), "utf-8"));
 const vector = json("vectors/identity/signing.json");
 
+const b64urlDecode = (s) => new Uint8Array(Buffer.from(s, "base64url"));
+const fromHex = (h) => new Uint8Array(h.match(/../g).map((x) => parseInt(x, 16)));
+const ECDSA_P256 = { name: "ECDSA", namedCurve: "P-256" };
+
 // --- Steward ID derivation ---------------------------------------------------
 
 test("stewardId derives stw_ + base64url(SHA-256(SPKI DER)), unpadded", async () => {
   const pair = await generateStewardKey();
   const id = await stewardId(pair.publicKey);
-  assert.match(id, /^stw_[A-Za-z0-9_-]+$/);
-  assert.ok(id.length > 10);
+  assert.match(id, /^stw_[A-Za-z0-9_-]{43}$/);
 });
 
 test("stewardId is deterministic for a given public key", async () => {
@@ -53,63 +56,99 @@ test("stewardId is deterministic for a given public key", async () => {
   assert.equal(id1, id2);
 });
 
-// --- signRequest -------------------------------------------------------------
-
-test("signRequest builds the four headers with the right shapes", async () => {
-  const pair = await generateStewardKey();
-  const method = vector.method;
-  const path = vector.path;
-  const date = vector.date;
-  const body = vector.body;
-  const headers = await signRequest(pair, { method, path, date, body });
-
-  const ID = "X-Steward-Id";
-  const KEY = "X-Steward-Key";
-  const DATE = "X-Steward-Date";
-  const SIG = "X-Steward-Sig";
-  assert.equal(typeof headers[ID], "string");
-  assert.match(headers[ID], /^stw_[A-Za-z0-9_-]+$/);
-  assert.equal(typeof headers[KEY], "string");
-  assert.ok(headers[KEY].length > 20);
-  assert.equal(typeof headers[DATE], "string");
-  assert.equal(headers[DATE], date);
-  assert.equal(typeof headers[SIG], "string");
-  // base64url of 64 bytes = 86 chars without padding
-  assert.equal(headers[SIG].length, 86);
+test("two generated keys give two different Steward IDs", async () => {
+  const a = await generateStewardKey();
+  const b = await generateStewardKey();
+  assert.notEqual(await stewardId(a.publicKey), await stewardId(b.publicKey));
 });
 
-test("signRequest builds the four headers correctly", async () => {
+test("stewardId is not the SHA-256 of an empty SPKI", async () => {
+  // stw_ + base64url(SHA-256("")): what every key yielded when exportKey was
+  // not awaited.
   const pair = await generateStewardKey();
-  const method = vector.method;
-  const path = vector.path;
-  const date = vector.date;
-  const body = vector.body;
+  assert.notEqual(await stewardId(pair.publicKey), "stw_47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU");
+});
+
+test("parity: stewardId of the vector's SPKI equals the vector's steward_id (as Python's steward_id)", async () => {
+  const imported = await globalThis.crypto.subtle.importKey(
+    "spki", fromHex(vector.spki_der), ECDSA_P256, true, ["verify"],
+  );
+  assert.equal(await stewardId(imported), vector.steward_id);
+  assert.equal(vector["X-Steward-Id"], vector.steward_id);
+});
+
+// --- vector: raw r||s signature, base64url fields -----------------------------
+
+test("vector: X-Steward-Key is base64url SPKI equal to spki_der", () => {
+  assert.doesNotMatch(vector["X-Steward-Key"], /[+/=]/);
+  assert.deepEqual(b64urlDecode(vector["X-Steward-Key"]), fromHex(vector.spki_der));
+  assert.equal(vector.spki_der_b64url, vector["X-Steward-Key"]);
+  assert.equal(vector.spki_der_b64, undefined);
+});
+
+test("vector: X-Steward-Sig is 64 raw bytes (r||s) and verifies over signed_string", async () => {
+  assert.doesNotMatch(vector["X-Steward-Sig"], /[+/=]/);
+  const sig = b64urlDecode(vector["X-Steward-Sig"]);
+  assert.equal(sig.length, 64);
+  const key = await globalThis.crypto.subtle.importKey(
+    "spki", b64urlDecode(vector["X-Steward-Key"]), ECDSA_P256, true, ["verify"],
+  );
+  const ok = await globalThis.crypto.subtle.verify(
+    { name: "ECDSA", hash: "SHA-256" }, key, sig, new TextEncoder().encode(vector.signed_string),
+  );
+  assert.equal(ok, true);
+  // A different string must not verify.
+  const bad = await globalThis.crypto.subtle.verify(
+    { name: "ECDSA", hash: "SHA-256" }, key, sig, new TextEncoder().encode(vector.signed_string + "x"),
+  );
+  assert.equal(bad, false);
+});
+
+test("vector: signed_string is METHOD \\n PATH \\n DATE \\n body_digest", () => {
+  assert.equal(
+    vector.signed_string,
+    `${vector.method}\n${vector.path}\n${vector.date}\n${vector.body_digest}`,
+  );
+});
+
+// --- signRequest -------------------------------------------------------------
+
+async function verifyHeaders(pair, headers, signedString) {
+  const sig = b64urlDecode(headers["X-Steward-Sig"]);
+  assert.equal(sig.length, 64);
+  return globalThis.crypto.subtle.verify(
+    { name: "ECDSA", hash: "SHA-256" }, pair.publicKey, sig, new TextEncoder().encode(signedString),
+  );
+}
+
+test("signRequest without includeKey omits X-Steward-Key and signs the canonical string", async () => {
+  const pair = await generateStewardKey();
+  const { method, path, date, body } = vector;
   const headers = await signRequest(pair, { method, path, date, body });
 
-  // X-Steward-Id is derived from the fresh key pair, so it cannot equal the
-  // vector's (built from a static SPKI). Its shape is what matters.
-  assert.match(headers["X-Steward-Id"], /^stw_[A-Za-z0-9_-]+$/);
+  assert.deepEqual(Object.keys(headers).sort(), ["X-Steward-Date", "X-Steward-Id", "X-Steward-Sig"]);
+  assert.equal(headers["X-Steward-Id"], await stewardId(pair.publicKey));
   assert.equal(headers["X-Steward-Date"], date);
-
-  // The signed string is canonical: METHOD \n PATH \n DATE \n body_digest.
-  // It is deterministic (no key involvement) and must equal the vector's.
-  const signedString = `${method}\n${path}\n${date}\n${vector.body_digest}`;
-  assert.equal(signedString, vector.signed_string);
-
-  // The signature header must be base64url of exactly 64 bytes (86 chars
-  // unpadded) and must verify against the signed string we just computed.
+  // base64url of 64 bytes = 86 chars without padding
   assert.equal(headers["X-Steward-Sig"].length, 86);
-  // base64url-decode the signature (raw r||s, 64 bytes) before verifying.
-  const sigBytes = new Uint8Array(
-    atob(headers["X-Steward-Sig"].replace(/-/g, "+").replace(/_/g, "/")).split("").map((c) => c.charCodeAt(0)),
+  assert.equal(await verifyHeaders(pair, headers, vector.signed_string), true);
+});
+
+test("signRequest with includeKey (register) adds X-Steward-Key matching X-Steward-Id", async () => {
+  const pair = await generateStewardKey();
+  const { method, path, date, body } = vector;
+  const headers = await signRequest(pair, { method, path, date, body }, { includeKey: true });
+
+  assert.deepEqual(
+    Object.keys(headers).sort(),
+    ["X-Steward-Date", "X-Steward-Id", "X-Steward-Key", "X-Steward-Sig"],
   );
-  const valid = await globalThis.crypto.subtle.verify(
-    { name: "ECDSA", hash: "SHA-256" },
-    pair.publicKey,
-    sigBytes,
-    new TextEncoder().encode(signedString),
+  assert.doesNotMatch(headers["X-Steward-Key"], /[+/=]/);
+  const imported = await globalThis.crypto.subtle.importKey(
+    "spki", b64urlDecode(headers["X-Steward-Key"]), ECDSA_P256, true, ["verify"],
   );
-  assert.equal(valid, true);
+  assert.equal(await stewardId(imported), headers["X-Steward-Id"]);
+  assert.equal(await verifyHeaders(pair, headers, vector.signed_string), true);
 });
 
 // --- key persistence (only when IndexedDB is available, as in the PWA) --------

@@ -10,13 +10,20 @@ the signed-string construction; the server (S2) verifies the signature.
 """
 
 import base64
-
-import pytest
+import json
+from pathlib import Path
 
 from steward import identity
 
-VECTOR = (pytest.importorskip("json")
-          .loads((pytest.importorskip("pathlib").Path(__file__).resolve().parent.parent / "vectors" / "identity" / "signing.json").read_text()))
+# Written by tools/make_identity_vector.mjs (TEST ONLY key).
+VECTOR = json.loads(
+    (Path(__file__).resolve().parent.parent / "vectors" / "identity" / "signing.json").read_text()
+)
+
+
+def _b64url_decode(s: str) -> bytes:
+    assert "=" not in s and "+" not in s and "/" not in s, "must be base64url, unpadded"
+    return base64.urlsafe_b64decode(s + "=" * (-len(s) % 4))
 
 
 def test_steward_id_derivation():
@@ -62,3 +69,21 @@ def test_signed_string_for_activate():
     want = "GET\n/activate\n2026-10-12T20:00:00Z\n47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU"
     got = identity.signed_string(method, path, date, body)
     assert got == want
+
+
+def test_vector_signed_string_and_steward_id():
+    body = VECTOR["body"].encode("utf-8")
+    assert identity.signed_string(VECTOR["method"], VECTOR["path"], VECTOR["date"], body) == VECTOR["signed_string"]
+    assert identity.steward_id(bytes.fromhex(VECTOR["spki_der"])) == VECTOR["steward_id"]
+    assert VECTOR["X-Steward-Id"] == VECTOR["steward_id"]
+
+
+def test_vector_signature_is_raw_r_s_64_bytes():
+    # Raw r||s (IEEE P1363), not DER: exactly 64 bytes after base64url decode.
+    assert len(_b64url_decode(VECTOR["X-Steward-Sig"])) == 64
+
+
+def test_vector_key_is_base64url_spki():
+    assert _b64url_decode(VECTOR["X-Steward-Key"]) == bytes.fromhex(VECTOR["spki_der"])
+    assert VECTOR["spki_der_b64url"] == VECTOR["X-Steward-Key"]
+    assert "spki_der_b64" not in VECTOR

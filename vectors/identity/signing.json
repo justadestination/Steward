@@ -1,16 +1,16 @@
 {
-  "source": "openssl EC P-256 (ECDSA), manual",
-  "spki_der": "3059301306072a8648ce3d020106082a8648ce3d030107034200043de05d4c90f1fe186f108e99ec1da0c892004302573fcfffd0715c77c1dcd05576163cdd9d15b3451b045b8b935ac78e5b8247b679ddb17350ce3c2228198d75",
-  "spki_der_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPeBdTJDx/hhvEI6Z7B2gyJIAQwJXP8//0HFcd8Hc0FV2FjzdnRWzRRsEW4uTWseOW4JHtnndsXNQzjwiKBmNdQ==",
-  "steward_id": "stw_FkNXRMq6QcYPV-oUREGk0GWIwL4JqItv9pjRym7-5Ak",
+  "source": "tools/make_identity_vector.mjs (WebCrypto ECDSA P-256, SHA-256, raw r||s; TEST ONLY key)",
+  "spki_der": "3059301306072a8648ce3d020106082a8648ce3d03010703420004e7a4f99c6fddcf41ea55963f2536fa75b694f722f676203ffd9895a3416f4f3ac775aa018a5c063e3e1b905fa7bc7820743ed1dbecd551f6d81b493aff1031d1",
+  "spki_der_b64url": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE56T5nG_dz0HqVZY_JTb6dbaU9yL2diA__ZiVo0FvTzrHdaoBilwGPj4bkF-nvHggdD7R2-zVUfbYG0k6_xAx0Q",
+  "steward_id": "stw_uokuW3sxIn3ZZVbIyMoU93sgvk17fZ19lrVkfgh-5AI",
   "method": "POST",
   "path": "/register",
   "date": "2026-10-12T20:00:00Z",
-  "body": "{\"steward_id\":\"stw_FkNXRMq6QcYPV-oUREGk0GWIwL4JqItv9pjRym7-5Ak\"}",
-  "body_digest": "1td-TvaCGOQhLj8H0vo_Igs6IvtYxsIBFH9zbxKl9qI",
-  "signed_string": "POST\n/register\n2026-10-12T20:00:00Z\n1td-TvaCGOQhLj8H0vo_Igs6IvtYxsIBFH9zbxKl9qI",
-  "X-Steward-Id": "stw_FkNXRMq6QcYPV-oUREGk0GWIwL4JqItv9pjRym7-5Ak",
-  "X-Steward-Key": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEPeBdTJDx/hhvEI6Z7B2gyJIAQwJXP8//0HFcd8Hc0FV2FjzdnRWzRRsEW4uTWseOW4JHtnndsXNQzjwiKBmNdQ==",
+  "body": "{\"steward_id\":\"stw_uokuW3sxIn3ZZVbIyMoU93sgvk17fZ19lrVkfgh-5AI\"}",
+  "body_digest": "SPwLQY7zr5Djm5hftTLlO3l1QB4FYzutjhR6Qqolz04",
+  "signed_string": "POST\n/register\n2026-10-12T20:00:00Z\nSPwLQY7zr5Djm5hftTLlO3l1QB4FYzutjhR6Qqolz04",
+  "X-Steward-Id": "stw_uokuW3sxIn3ZZVbIyMoU93sgvk17fZ19lrVkfgh-5AI",
+  "X-Steward-Key": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE56T5nG_dz0HqVZY_JTb6dbaU9yL2diA__ZiVo0FvTzrHdaoBilwGPj4bkF-nvHggdD7R2-zVUfbYG0k6_xAx0Q",
   "X-Steward-Date": "2026-10-12T20:00:00Z",
-  "X-Steward-Sig": "MEUCIAkE3HbSbXqrCON1_3devLiJIWNH2zP6FsgDDtfKDsgsAiEA-R34bge2qJegtRrdnnNkxdYRjgg7TJoEpdSvyIb8HeI"
+  "X-Steward-Sig": "unajK6CtBdIxv9vPleCZ-3McjO8nabGLm8DP_5MPksW-5Yy_tW14bHG0P9rDh-uFkG50pZW3OKiWpSLsAR1EXw"
 }
