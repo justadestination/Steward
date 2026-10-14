@@ -124,3 +124,17 @@ def test_wrong_key_does_not_verify() -> None:
     sig = blind.finalize(n_b, e_b, prepared, blind.blind_sign(n_b, e_b, d_b, blinded_msg), inv)
     assert blind.verify(n_b, e_b, prepared, sig)
     assert not blind.verify(n_a, e_a, prepared, sig)
+
+
+CROSS = json.loads((Path(__file__).resolve().parent.parent / "vectors" / "blind" / "cross.json").read_text())["cases"]
+
+
+@pytest.mark.parametrize("c", CROSS)
+def test_cross_vector_reproduces(c: dict) -> None:
+    n, e, d = key(VECTORS[0])
+    prepared = blind.prepare(h(c["msg"]), prefix=h(c["msg_prefix"]))
+    assert prepared == h(c["prepared_msg"])
+    blinded_msg, inv = blind.blind(n, e, prepared, salt=h(c["salt"]), r=int(c["r"], 16))
+    assert (blinded_msg, inv) == (h(c["blinded_msg"]), h(c["inv"]))
+    assert blind.blind_sign(n, e, d, blinded_msg) == h(c["blind_sig"])
+    assert blind.finalize(n, e, prepared, h(c["blind_sig"]), inv) == h(c["sig"])
