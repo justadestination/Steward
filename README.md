@@ -118,8 +118,6 @@ are anonymous.
 
 - **Rendering the ward's web.** The introduction writes answers; the surface
   that reads them is the next layer.
-- **Activation.** Over-21 proof, Steward keys, and the scrubbed container. To be
-  built against a test issuer so development is never blocked.
 - **Transport.** How events reach graphs, and who sets `sender.via_steward`. It
   must come from how a submission arrived, never from what the sender typed.
 - **Model-based signals.** `classify.py` uses posted word lists only. A model can
@@ -140,7 +138,13 @@ are anonymous.
 - **What marks do** to a line is undecided.
 - **Wording:** every line in `messages.json` is a placeholder until it's
   written in the Steward's voice.
-- Next graphs: activation, signed character file, restore-on-connect.
+- Next graphs: signed character file, restore-on-connect.
+
+## Built
+
+- **Activation.** Over-21 proof, Steward keys, and the scrubbed container. Built
+  against a test issuer so development is never blocked.
+- **Steward identity and request signing.** Steward ID is `stw_` + base64url(SHA-256(SPKI DER)). Requests are signed with ECDSA P-256, headers `X-Steward-Id`, `X-Steward-Date`, `X-Steward-Sig`, signed string `METHOD \\n PATH \\n DATE \\n base64url(SHA-256(body))`.
 
 ## License
 
