@@ -111,7 +111,12 @@ def strike_holds_time_out(event: Event, context: Mapping[str, Any], policy: Mapp
     return t is not None and t["strike_id"] == event.payload["strike_id"]
 
 
-# ---- Activation --------------------------------------------------------------
+# ---- Restore --------------------------------------------------------------
+
+@condition("fingerprint_matches", payload=("fingerprint",))
+def fingerprint_matches(event: Event, context: Mapping[str, Any], policy: Mapping[str, Any]) -> bool:
+    return event.payload["fingerprint"] == policy["character"]["fingerprint"]
+
 
 @condition("presentation_valid_and_over_21", signals=("over_21", "presentation_valid"))
 def presentation_valid_and_over_21(event: Event, context: Mapping[str, Any], policy: Mapping[str, Any]) -> bool:

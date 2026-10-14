@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "voice": {
+    "name": "Steward",
+    "tone": "calm, brief",
+    "principles": [
+      "Loyal to the platform, working for the ward.",
+      "Reports what and how, never who.",
+      "Explains holds."
+    ],
+    "source": "Steward-ID.md"
+  },
+  "rules": {
+    "R1": "Posting goes through a Steward; reading is open.",
+    "R2": "No bullying, harassment or threats.",
+    "R3": "Two posts in a row per thread, then cool off.",
+    "R4": "Hate is withheld silently.",
+    "R5": "Conduct toward the Steward: warning, time-out, departure.",
+    "R6": "Review of departure, 24h wait, 72h deadline.",
+    "R7": "Appeal window 14 days, penalty 1-3.",
+    "R8": "Operators reachable at @dontwastemytime."
+  }
+}

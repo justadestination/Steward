@@ -1,0 +1,57 @@
+{
+  "graph": "restore",
+  "version": 1,
+  "policy": "house_rules",
+  "initial": "connect",
+  "terminal": [
+    "in_sync"
+  ],
+  "events": {
+    "connect": {
+      "payload": [
+        "fingerprint"
+      ],
+      "signals": []
+    },
+    "restore": {
+      "payload": [
+        "signed_file"
+      ],
+      "signals": []
+    }
+  },
+  "states": {
+    "connect": "Steward connects with fingerprint of local character file.",
+    "in_sync": "Character file matches House.",
+    "restore": "House provides signed character file; Steward replaces local copy after verification."
+  },
+  "transitions": [
+    {
+      "from": "connect",
+      "on": "connect",
+      "branches": [
+        {
+          "when": "fingerprint_matches",
+          "to": "in_sync",
+          "do": []
+        },
+        {
+          "when": "otherwise",
+          "to": "restore",
+          "do": []
+        }
+      ]
+    },
+    {
+      "from": "restore",
+      "on": "restore",
+      "branches": [
+        {
+          "when": "otherwise",
+          "to": "in_sync",
+          "do": []
+        }
+      ]
+    }
+  ]
+}
