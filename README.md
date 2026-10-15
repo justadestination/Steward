@@ -16,7 +16,8 @@ decision is a declared branch, every input is recorded, and every ledger can
 be replayed to the same result. Python 3.11+ (stdlib) on the server, plain
 ES modules in the PWA. No dependencies.
 
-Status: working core, not yet wired into an app. See **Open** below.
+Status: working core. The server side runs inside ShadeNet (it vendors this
+repo); the phone app that uses `pwa/` is not built yet. See **Open** below.
 
 ## Commands
 
@@ -143,15 +144,18 @@ are anonymous.
   written in the Steward's voice.
 - **Character voice:** `steward/data/character.json` is an empty skeleton;
   the owner writes the voice.
-- **Presentation check:** `run_activation` takes `verify_presentation` and
-  `signer` as arguments and is tested with stubs. The real mDL check, the
-  trusted-issuer list, and the test issuer are not built.
-- **Server side of request signing:** the phone signs; the server does not
-  yet verify those signatures (needs ECDSA, outside the stdlib).
-- **House signing of the character file:** the phone verifies Ed25519
-  signatures; signing on the server (House key) and the `/connect` reply that
-  carries the House's fingerprint are not built.
-- **Transport** for activation, register and connect: no HTTP endpoints yet.
+- **Phone app:** the modules in `pwa/` are tested, but no app uses them yet:
+  key storage, the activation screens, redeeming the token after a random
+  delay, and restore in the service worker are still to build.
+- **Trusted issuers:** the mDL check refuses real IDs until a list of trusted
+  issuer certificates is configured and certificate chains are validated.
+  Only test IDs can be signed today.
+
+Built in ShadeNet rather than here, because they need its server and
+`cryptography` (outside the stdlib): the HTTP endpoints for activation,
+register, connect and operator mail; the mDL presentation check and the test
+issuer; the separate signing process; server-side verification of signed
+requests; and House signing of the character file.
 
 ## Built
 
